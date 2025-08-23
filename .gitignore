@@ -16,6 +16,12 @@ ENV/
 *.key
 *.pem
 
+# Security - API Keys
+.keys/
+*.enc
+master.key
+rotation_log.json
+
 # IDE
 .vscode/
 .idea/
