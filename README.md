@@ -1,5 +1,10 @@
 # Kimchi Premium Futures Hedge Arbitrage System
 
+[![CI Pipeline](https://github.com/yourusername/kimchi-premium-arbitrage/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/kimchi-premium-arbitrage/actions/workflows/ci.yml)
+[![Code Quality](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 업비트 현물과 바이낸스 선물을 활용한 김치프리미엄 차익거래 자동화 시스템
 
 ## 🎯 프로젝트 개요
