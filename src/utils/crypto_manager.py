@@ -13,7 +13,7 @@ from typing import Any, Dict, Optional
 
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 
 class CryptoManager:
@@ -58,7 +58,7 @@ class CryptoManager:
 
     def _derive_key_from_password(self, password: str, salt: bytes) -> bytes:
         """비밀번호로부터 암호화 키 유도"""
-        kdf = PBKDF2(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,
