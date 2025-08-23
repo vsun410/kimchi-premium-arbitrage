@@ -127,6 +127,7 @@ jobs:
     
     - name: Verify imports
       run: |
+        export PYTHONPATH="${PYTHONPATH}:${PWD}"
         python -c "import src.utils.logger; print('Logger module OK')"
         python -c "import src.utils.crypto_manager; print('Crypto module OK')"
         python -c "import src.data.websocket_manager; print('WebSocket module OK')"
