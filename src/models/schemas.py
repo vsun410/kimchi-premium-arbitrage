@@ -17,9 +17,12 @@ class Exchange(str, Enum):
 
 class Symbol(str, Enum):
     """거래 심볼"""
-    BTC = "BTC"
-    ETH = "ETH"
-    XRP = "XRP"
+    BTC_KRW = "BTC/KRW"
+    BTC_USDT = "BTC/USDT"
+    BTC_USDT_PERP = "BTC/USDT:USDT"  # 바이낸스 선물
+    ETH_KRW = "ETH/KRW"
+    ETH_USDT = "ETH/USDT"
+    ETH_USDT_PERP = "ETH/USDT:USDT"  # 바이낸스 선물
 
 
 class OrderSide(str, Enum):
@@ -40,7 +43,7 @@ class PriceData(BaseModel):
     """가격 데이터 모델"""
     timestamp: datetime
     exchange: Exchange
-    symbol: Symbol
+    symbol: str  # Symbol enum 대신 str 사용 (유연성)
     open: float = Field(gt=0)
     high: float = Field(gt=0)
     low: float = Field(gt=0)
@@ -71,21 +74,15 @@ class OrderBookData(BaseModel):
     """오더북 데이터 모델"""
     timestamp: datetime
     exchange: Exchange
-    symbol: Symbol
-    bids: List[OrderBookLevel]  # 매수 호가
-    asks: List[OrderBookLevel]  # 매도 호가
-    liquidity_score: float = Field(ge=0, le=100)
+    symbol: str  # Symbol enum 대신 str 사용 (유연성)
+    bids: List[Tuple[float, float]]  # [(price, amount), ...]
+    asks: List[Tuple[float, float]]  # [(price, amount), ...]
+    bid_volume: float = Field(ge=0)
+    ask_volume: float = Field(ge=0)
+    spread: float = Field(ge=0)
     spread_percentage: float = Field(ge=0)
-    bid_ask_imbalance: Optional[float] = None
+    liquidity_score: float = Field(ge=0, le=100)
     
-    @validator('spread_percentage')
-    def calculate_spread(cls, v, values):
-        if 'bids' in values and 'asks' in values:
-            if values['bids'] and values['asks']:
-                best_bid = values['bids'][0].price
-                best_ask = values['asks'][0].price
-                return ((best_ask - best_bid) / best_ask) * 100
-        return v
 
 
 class Signal(BaseModel):
