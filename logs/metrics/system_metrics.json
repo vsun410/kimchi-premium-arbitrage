@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-08-24T03:25:46.124388",
+  "current": {
+    "cpu_percent": 20.8,
+    "memory_percent": 63.4,
+    "memory_mb": 20316.984375,
+    "disk_percent": 42.7
+  },
+  "average_5min": {
+    "cpu_percent": 19.275,
+    "memory_percent": 63.4
+  },
+  "network": {
+    "sent_mb": 562.3945713043213,
+    "recv_mb": 1296.9161939620972
+  },
+  "process": {
+    "open_files": 7,
+    "threads": 8
+  }
+}

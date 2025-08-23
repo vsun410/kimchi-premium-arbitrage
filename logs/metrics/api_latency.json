@@ -1,0 +1,32 @@
+{
+  "upbit_fetch_ticker": {
+    "avg": 25.5,
+    "min": 25.5,
+    "max": 25.5,
+    "count": 1
+  },
+  "binance_fetch_ticker": {
+    "avg": 15.3,
+    "min": 15.3,
+    "max": 15.3,
+    "count": 1
+  },
+  "upbit_fetch_balance": {
+    "avg": 30.2,
+    "min": 30.2,
+    "max": 30.2,
+    "count": 1
+  },
+  "upbit_fetch_orderbook": {
+    "avg": 51.09739303588867,
+    "min": 51.09739303588867,
+    "max": 51.09739303588867,
+    "count": 1
+  },
+  "binance_place_order": {
+    "avg": 30.56621551513672,
+    "min": 30.56621551513672,
+    "max": 30.56621551513672,
+    "count": 1
+  }
+}

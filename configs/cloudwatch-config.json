@@ -1,0 +1,170 @@
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "cwagent"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/app/logs/kimchi_arbitrage.log",
+            "log_group_name": "/aws/ec2/kimchi-arbitrage",
+            "log_stream_name": "{instance_id}/application",
+            "retention_in_days": 30,
+            "timestamp_format": "%Y-%m-%dT%H:%M:%S",
+            "multi_line_start_pattern": "{\"timestamp\""
+          },
+          {
+            "file_path": "/app/logs/kimchi_arbitrage_error.log",
+            "log_group_name": "/aws/ec2/kimchi-arbitrage",
+            "log_stream_name": "{instance_id}/errors",
+            "retention_in_days": 90,
+            "timestamp_format": "%Y-%m-%dT%H:%M:%S"
+          },
+          {
+            "file_path": "/app/logs/trading.log",
+            "log_group_name": "/aws/ec2/kimchi-arbitrage",
+            "log_stream_name": "{instance_id}/trading",
+            "retention_in_days": 365,
+            "timestamp_format": "%Y-%m-%dT%H:%M:%S"
+          }
+        ]
+      }
+    }
+  },
+  "metrics": {
+    "namespace": "KimchiArbitrage",
+    "metrics_collected": {
+      "cpu": {
+        "measurement": [
+          {
+            "name": "cpu_usage_idle",
+            "rename": "CPU_USAGE_IDLE",
+            "unit": "Percent"
+          },
+          {
+            "name": "cpu_usage_iowait",
+            "rename": "CPU_USAGE_IOWAIT",
+            "unit": "Percent"
+          }
+        ],
+        "metrics_collection_interval": 60,
+        "totalcpu": false
+      },
+      "disk": {
+        "measurement": [
+          {
+            "name": "used_percent",
+            "rename": "DISK_USED_PERCENT",
+            "unit": "Percent"
+          },
+          {
+            "name": "inodes_free",
+            "rename": "DISK_INODES_FREE",
+            "unit": "Count"
+          }
+        ],
+        "metrics_collection_interval": 60,
+        "resources": [
+          "*"
+        ]
+      },
+      "diskio": {
+        "measurement": [
+          {
+            "name": "io_time",
+            "rename": "DISKIO_IO_TIME",
+            "unit": "Milliseconds"
+          },
+          {
+            "name": "write_bytes",
+            "rename": "DISKIO_WRITE_BYTES",
+            "unit": "Bytes"
+          },
+          {
+            "name": "read_bytes",
+            "rename": "DISKIO_READ_BYTES",
+            "unit": "Bytes"
+          },
+          {
+            "name": "writes",
+            "rename": "DISKIO_WRITES",
+            "unit": "Count"
+          },
+          {
+            "name": "reads",
+            "rename": "DISKIO_READS",
+            "unit": "Count"
+          }
+        ],
+        "metrics_collection_interval": 60
+      },
+      "mem": {
+        "measurement": [
+          {
+            "name": "mem_used_percent",
+            "rename": "MEM_USED_PERCENT",
+            "unit": "Percent"
+          },
+          {
+            "name": "mem_available",
+            "rename": "MEM_AVAILABLE",
+            "unit": "Bytes"
+          },
+          {
+            "name": "mem_used",
+            "rename": "MEM_USED",
+            "unit": "Bytes"
+          }
+        ],
+        "metrics_collection_interval": 60
+      },
+      "netstat": {
+        "measurement": [
+          {
+            "name": "tcp_established",
+            "rename": "TCP_ESTABLISHED",
+            "unit": "Count"
+          },
+          {
+            "name": "tcp_time_wait",
+            "rename": "TCP_TIME_WAIT",
+            "unit": "Count"
+          }
+        ],
+        "metrics_collection_interval": 60
+      },
+      "swap": {
+        "measurement": [
+          {
+            "name": "swap_used_percent",
+            "rename": "SWAP_USED_PERCENT",
+            "unit": "Percent"
+          },
+          {
+            "name": "swap_free",
+            "rename": "SWAP_FREE",
+            "unit": "Bytes"
+          },
+          {
+            "name": "swap_used",
+            "rename": "SWAP_USED",
+            "unit": "Bytes"
+          }
+        ],
+        "metrics_collection_interval": 60
+      }
+    },
+    "append_dimensions": {
+      "Environment": "Production",
+      "Application": "KimchiArbitrage",
+      "Version": "1.0.0"
+    },
+    "aggregation_dimensions": [
+      ["Environment"],
+      ["Application"],
+      ["Environment", "Application"]
+    ]
+  }
+}
