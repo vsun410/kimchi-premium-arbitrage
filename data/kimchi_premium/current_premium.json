@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-08-24T04:23:38.824827",
+  "upbit_price": 180000000,
+  "binance_price": 115000,
+  "exchange_rate": 1386.14,
+  "premium_rate": 5.5,
+  "premium_krw": 5500000,
+  "signal": "strong_buy",
+  "liquidity_score": 90.0,
+  "spread_upbit": 0.03,
+  "spread_binance": 0.01,
+  "confidence": 0.92
+}
