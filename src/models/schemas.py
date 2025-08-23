@@ -3,20 +3,23 @@
 Pydantic을 사용한 데이터 검증 및 직렬화
 """
 
-from pydantic import BaseModel, Field, validator
 from datetime import datetime
-from typing import Optional, List, Tuple, Dict
 from enum import Enum
+from typing import Dict, List, Optional, Tuple
+
+from pydantic import BaseModel, Field, validator
 
 
 class Exchange(str, Enum):
     """거래소 종류"""
+
     UPBIT = "upbit"
     BINANCE = "binance"
 
 
 class Symbol(str, Enum):
     """거래 심볼"""
+
     BTC_KRW = "BTC/KRW"
     BTC_USDT = "BTC/USDT"
     BTC_USDT_PERP = "BTC/USDT:USDT"  # 바이낸스 선물
@@ -27,12 +30,14 @@ class Symbol(str, Enum):
 
 class OrderSide(str, Enum):
     """주문 방향"""
+
     BUY = "buy"
     SELL = "sell"
 
 
 class SignalAction(str, Enum):
     """시그널 액션"""
+
     ENTER = "enter"
     EXIT = "exit"
     HOLD = "hold"
@@ -41,6 +46,7 @@ class SignalAction(str, Enum):
 
 class PriceData(BaseModel):
     """가격 데이터 모델"""
+
     timestamp: datetime
     exchange: Exchange
     symbol: str  # Symbol enum 대신 str 사용 (유연성)
@@ -51,27 +57,27 @@ class PriceData(BaseModel):
     volume: float = Field(ge=0)
     kimchi_premium_rate: Optional[float] = None
     exchange_rate: Optional[float] = Field(None, gt=0)
-    
-    @validator('high')
+
+    @validator("high")
     def high_gte_low(cls, v, values):
-        if 'low' in values and v < values['low']:
-            raise ValueError('high must be >= low')
+        if "low" in values and v < values["low"]:
+            raise ValueError("high must be >= low")
         return v
-    
+
     class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class OrderBookLevel(BaseModel):
     """오더북 레벨"""
+
     price: float = Field(gt=0)
     size: float = Field(gt=0)
 
 
 class OrderBookData(BaseModel):
     """오더북 데이터 모델"""
+
     timestamp: datetime
     exchange: Exchange
     symbol: str  # Symbol enum 대신 str 사용 (유연성)
@@ -82,11 +88,11 @@ class OrderBookData(BaseModel):
     spread: float = Field(ge=0)
     spread_percentage: float = Field(ge=0)
     liquidity_score: float = Field(ge=0, le=100)
-    
 
 
 class Signal(BaseModel):
     """거래 시그널 모델"""
+
     timestamp: datetime
     action: SignalAction
     confidence: float = Field(ge=0, le=1)  # 0~1 신뢰도
@@ -99,6 +105,7 @@ class Signal(BaseModel):
 
 class Position(BaseModel):
     """포지션 모델"""
+
     entry_time: datetime
     symbol: Symbol
     spot_entry_price: float = Field(gt=0)  # 현물 진입가
@@ -111,7 +118,7 @@ class Position(BaseModel):
     exit_time: Optional[datetime] = None
     exit_reason: Optional[str] = None
     final_pnl: Optional[float] = None
-    
+
     @property
     def duration(self) -> Optional[float]:
         """포지션 보유 시간 (시간 단위)"""
@@ -122,18 +129,18 @@ class Position(BaseModel):
 
 class ExchangeRate(BaseModel):
     """환율 데이터 모델"""
+
     timestamp: datetime
     usd_krw: float = Field(gt=0)
     source: str  # API 소스
-    
+
     class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+        json_encoders = {datetime: lambda v: v.isoformat()}
 
 
 class TradingMetrics(BaseModel):
     """거래 성과 지표"""
+
     total_trades: int = Field(ge=0)
     winning_trades: int = Field(ge=0)
     losing_trades: int = Field(ge=0)
@@ -144,9 +151,9 @@ class TradingMetrics(BaseModel):
     max_drawdown: float  # 최대 낙폭 (%)
     total_pnl: float  # 총 손익
     roi: float  # ROI (%)
-    
-    @validator('win_rate')
+
+    @validator("win_rate")
     def calculate_win_rate(cls, v, values):
-        if 'total_trades' in values and values['total_trades'] > 0:
-            return (values.get('winning_trades', 0) / values['total_trades']) * 100
+        if "total_trades" in values and values["total_trades"] > 0:
+            return (values.get("winning_trades", 0) / values["total_trades"]) * 100
         return 0.0
