@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kimchi Premium Arbitrage Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .status-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .status-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .status-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .status-value.positive {
+            color: #28a745;
+        }
+        
+        .status-value.negative {
+            color: #dc3545;
+        }
+        
+        .price-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .exchange-name {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .price {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .premium-indicator {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 10px;
+            color: white;
+        }
+        
+        .premium-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .alert-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .alert-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .alert-item.info {
+            background: #cfe2ff;
+            border-color: #0d6efd;
+        }
+        
+        .alert-item.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+        
+        .alert-item.error {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .alert-item.success {
+            background: #d1e7dd;
+            border-color: #28a745;
+        }
+        
+        .alert-time {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5569d8;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .live-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-left: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            🌶️ Kimchi Premium Arbitrage Dashboard
+            <span class="live-indicator"></span>
+        </h1>
+        
+        <div class="grid">
+            <!-- 가격 정보 -->
+            <div class="card">
+                <div class="card-title">💱 실시간 가격</div>
+                <div class="price-display">
+                    <span class="exchange-name">🇰🇷 Upbit</span>
+                    <span class="price" id="upbit-price">Loading...</span>
+                </div>
+                <div class="price-display">
+                    <span class="exchange-name">🌍 Binance</span>
+                    <span class="price" id="binance-price">Loading...</span>
+                </div>
+                <div class="premium-indicator">
+                    <div style="font-size: 1rem;">김치 프리미엄</div>
+                    <div class="premium-value" id="premium-rate">0.00%</div>
+                    <div id="premium-status" style="font-size: 0.9rem;">Calculating...</div>
+                </div>
+            </div>
+            
+            <!-- 시스템 상태 -->
+            <div class="card">
+                <div class="card-title">🛠️ 시스템 상태</div>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-label">WebSocket 연결</div>
+                        <div class="status-value" id="ws-status">✅ Connected</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">발주 시스템</div>
+                        <div class="status-value" id="order-status">✅ Active</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">안전 시스템</div>
+                        <div class="status-value" id="safety-status">✅ Normal</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">알림 시스템</div>
+                        <div class="status-value" id="notification-status">✅ Active</div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="startTrading()">Start Trading</button>
+                    <button class="btn btn-danger" onclick="stopTrading()">Stop Trading</button>
+                </div>
+            </div>
+            
+            <!-- 잘고 정보 -->
+            <div class="card">
+                <div class="card-title">💰 잘고 정보</div>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-label">Upbit KRW</div>
+                        <div class="status-value" id="upbit-krw">0</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Upbit BTC</div>
+                        <div class="status-value" id="upbit-btc">0</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Binance USDT</div>
+                        <div class="status-value" id="binance-usdt">0</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Binance BTC</div>
+                        <div class="status-value" id="binance-btc">0</div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                    <div class="status-label">총 자산 가치</div>
+                    <div class="status-value" id="total-value" style="font-size: 1.5rem;">0 KRW</div>
+                </div>
+            </div>
+            
+            <!-- 오늘의 성과 -->
+            <div class="card">
+                <div class="card-title">📈 오늘의 성과</div>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-label">총 손익</div>
+                        <div class="status-value positive" id="today-pnl">+0 KRW</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">거래 횟수</div>
+                        <div class="status-value" id="trade-count">0</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">승률</div>
+                        <div class="status-value" id="win-rate">0%</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">평균 수익</div>
+                        <div class="status-value" id="avg-profit">0 KRW</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 최근 알림 -->
+            <div class="card">
+                <div class="card-title">🔔 최근 알림</div>
+                <div class="alert-list" id="alert-list">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 10px;">알림 대기 중...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 프리미엄 차트 -->
+            <div class="card">
+                <div class="card-title">📊 프리미엄 추이</div>
+                <div class="chart-container">
+                    <canvas id="premium-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 더미 데이터 생성
+        let premiumData = [];
+        let premiumChart = null;
+        
+        // 차트 초기화
+        function initChart() {
+            const ctx = document.getElementById('premium-chart').getContext('2d');
+            premiumChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '김치 프리미엄 (%)',
+                        data: [],
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 데이터 업데이트 함수
+        function updatePrices() {
+            // 더미 가격 생성
+            const upbitPrice = 140000000 + Math.random() * 5000000;
+            const binancePrice = 96000 + Math.random() * 2000;
+            const exchangeRate = 1400 + Math.random() * 50;
+            
+            const premium = ((upbitPrice / (binancePrice * exchangeRate)) - 1) * 100;
+            
+            document.getElementById('upbit-price').textContent = 
+                '₩' + upbitPrice.toLocaleString('ko-KR', {maximumFractionDigits: 0});
+            document.getElementById('binance-price').textContent = 
+                '$' + binancePrice.toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('premium-rate').textContent = 
+                premium.toFixed(2) + '%';
+            
+            // 프리미엄 상태 업데이트
+            if (premium > 3) {
+                document.getElementById('premium-status').textContent = '🔥 매수 신호!';
+            } else if (premium < -1) {
+                document.getElementById('premium-status').textContent = '🌊 매도 신호!';
+            } else {
+                document.getElementById('premium-status').textContent = '⏳ 대기 중';
+            }
+            
+            // 차트 업데이트
+            updateChart(premium);
+        }
+        
+        function updateChart(premium) {
+            const now = new Date();
+            const timeLabel = now.getHours() + ':' + 
+                String(now.getMinutes()).padStart(2, '0') + ':' + 
+                String(now.getSeconds()).padStart(2, '0');
+            
+            premiumChart.data.labels.push(timeLabel);
+            premiumChart.data.datasets[0].data.push(premium);
+            
+            // 최대 30개 데이터 포인트만 유지
+            if (premiumChart.data.labels.length > 30) {
+                premiumChart.data.labels.shift();
+                premiumChart.data.datasets[0].data.shift();
+            }
+            
+            premiumChart.update();
+        }
+        
+        function updateBalances() {
+            // 더미 잘고 업데이트
+            document.getElementById('upbit-krw').textContent = 
+                '₩' + (10000000 + Math.random() * 5000000).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+            document.getElementById('upbit-btc').textContent = 
+                (0.05 + Math.random() * 0.02).toFixed(4) + ' BTC';
+            document.getElementById('binance-usdt').textContent = 
+                '$' + (8000 + Math.random() * 2000).toLocaleString('en-US', {maximumFractionDigits: 2});
+            document.getElementById('binance-btc').textContent = 
+                (0.05 + Math.random() * 0.02).toFixed(4) + ' BTC';
+            
+            const totalValue = 40000000 + Math.random() * 5000000;
+            document.getElementById('total-value').textContent = 
+                '₩' + totalValue.toLocaleString('ko-KR', {maximumFractionDigits: 0});
+        }
+        
+        function updatePerformance() {
+            // 더미 성과 업데이트
+            const pnl = Math.random() * 1000000 - 200000;
+            document.getElementById('today-pnl').textContent = 
+                (pnl >= 0 ? '+' : '') + '₩' + pnl.toLocaleString('ko-KR', {maximumFractionDigits: 0});
+            document.getElementById('today-pnl').className = 
+                'status-value ' + (pnl >= 0 ? 'positive' : 'negative');
+            
+            document.getElementById('trade-count').textContent = 
+                Math.floor(Math.random() * 50);
+            document.getElementById('win-rate').textContent = 
+                (50 + Math.random() * 40).toFixed(1) + '%';
+            document.getElementById('avg-profit').textContent = 
+                '₩' + (Math.random() * 100000).toLocaleString('ko-KR', {maximumFractionDigits: 0});
+        }
+        
+        function addAlert(type, message) {
+            const alertList = document.getElementById('alert-list');
+            
+            // 첫 알림이면 로딩 제거
+            if (alertList.querySelector('.loading')) {
+                alertList.innerHTML = '';
+            }
+            
+            const alertItem = document.createElement('div');
+            alertItem.className = `alert-item ${type}`;
+            
+            const now = new Date();
+            const timeStr = now.getHours() + ':' + 
+                String(now.getMinutes()).padStart(2, '0') + ':' + 
+                String(now.getSeconds()).padStart(2, '0');
+            
+            alertItem.innerHTML = `
+                <div>${message}</div>
+                <div class="alert-time">${timeStr}</div>
+            `;
+            
+            alertList.insertBefore(alertItem, alertList.firstChild);
+            
+            // 최대 10개만 유지
+            while (alertList.children.length > 10) {
+                alertList.removeChild(alertList.lastChild);
+            }
+        }
+        
+        function generateRandomAlerts() {
+            const alerts = [
+                { type: 'info', message: '📈 김치 프리미엄 3.5% 돌파' },
+                { type: 'success', message: '✅ BTC 매수 체결: 0.01 BTC @ 140,500,000 KRW' },
+                { type: 'warning', message: '⚠️ 비트코인 가격 변동성 증가' },
+                { type: 'error', message: '❌ WebSocket 연결 재시도 중' },
+                { type: 'success', message: '✅ 포지션 청산 완료: +150,000 KRW' },
+                { type: 'info', message: '🔔 환율 업데이트: 1,405.23 KRW/USD' }
+            ];
+            
+            const randomAlert = alerts[Math.floor(Math.random() * alerts.length)];
+            addAlert(randomAlert.type, randomAlert.message);
+        }
+        
+        function startTrading() {
+            addAlert('success', '✅ 거래 시스템 시작');
+        }
+        
+        function stopTrading() {
+            addAlert('warning', '⚠️ 거래 시스템 중지');
+        }
+        
+        // 초기화
+        window.onload = function() {
+            initChart();
+            
+            // 주기적 업데이트
+            updatePrices();
+            updateBalances();
+            updatePerformance();
+            
+            setInterval(updatePrices, 2000);      // 2초마다 가격 업데이트
+            setInterval(updateBalances, 5000);    // 5초마다 잘고 업데이트
+            setInterval(updatePerformance, 10000); // 10초마다 성과 업데이트
+            setInterval(generateRandomAlerts, 8000); // 8초마다 램덤 알림
+        };
+    </script>
+</body>
+</html>
