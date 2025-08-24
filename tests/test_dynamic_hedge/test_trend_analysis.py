@@ -6,7 +6,7 @@ import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from kimchi_premium_arbitrage.dynamic_hedge.trend_analysis import (
+from dynamic_hedge.trend_analysis import (
     TrendAnalysisEngine, TrendLine, BreakoutSignal, TrianglePattern
 )
 

@@ -5,7 +5,7 @@ Tests for Dynamic Position Manager (Task 30)
 import pytest
 import asyncio
 from datetime import datetime, timedelta
-from kimchi_premium_arbitrage.dynamic_hedge.position_manager import (
+from dynamic_hedge.position_manager import (
     DynamicPositionManager, Position, PositionType, PositionStatus,
     HedgeState, ExitCondition
 )
