@@ -2,7 +2,9 @@
 ccxt>=4.0.0          # 거래소 API (Pro 버전 포함)
 pandas>=2.0.0         # 데이터 처리
 numpy>=1.24.0         # 수치 연산
-pydantic>=2.5.0       # 데이터 검증
+pydantic>=2.0.0       # 데이터 검증 (Python 3.9+ 호환)
+pyupbit>=0.2.33       # 업비트 API (실거래)
+aiofiles>=22.0.0      # 비동기 파일 처리 (Python 3.9+ 호환)
 
 # ML/DL Libraries (Phase 2-3)
 torch>=2.0.0          # PyTorch (LSTM)
