@@ -425,11 +425,11 @@ class TrendAnalysisEngine:
             
         return BreakoutSignal(
             timestamp=candle.name,
-            price=candle['close'],
-            volume=candle['volume'],
+            price=float(candle['close']),
+            volume=float(candle['volume']),
             direction=direction,
-            strength=strength,
-            volume_confirmation=volume_confirmation,
+            strength=float(strength),
+            volume_confirmation=bool(volume_confirmation),
             pattern_type=pattern_type
         )
     
