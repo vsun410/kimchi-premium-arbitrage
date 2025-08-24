@@ -304,12 +304,13 @@ class TestBalanceManager:
         
         # 추가 매수
         balance_manager.update_position('upbit', 'BTC', 0.05, 141000000, True)
-        assert position.amount == 0.15
-        assert position.avg_price == (0.1 * 140000000 + 0.05 * 141000000) / 0.15
+        assert abs(position.amount - 0.15) < 0.0001  # Float 정밀도 고려
+        expected_avg = (0.1 * 140000000 + 0.05 * 141000000) / 0.15
+        assert abs(position.avg_price - expected_avg) < 1  # 가격 정밀도 고려
         
         # 매도 (실현 손익)
         balance_manager.update_position('upbit', 'BTC', 0.05, 142000000, False)
-        assert position.amount == 0.10
+        assert abs(position.amount - 0.10) < 0.0001  # Float 정밀도 고려
         assert position.realized_pnl == 0.05 * (142000000 - position.avg_price)
 
 
