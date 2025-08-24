@@ -1,0 +1,17 @@
+{
+  "current_rate": 1390.25,
+  "statistics": {
+    "current": 1390.25,
+    "mean": 1390.25,
+    "std": 0.0,
+    "min": 1390.25,
+    "max": 1390.25,
+    "median": 1390.25,
+    "data_points": 3,
+    "start_date": "2025-08-24T04:03:00.669567",
+    "end_date": "2025-08-24T04:05:22.384923"
+  },
+  "last_updated": "2025-08-24T21:05:32.170643",
+  "data_source": "data/exchange_rates",
+  "warning": "DO NOT HARDCODE EXCHANGE RATES! Always use ExchangeRateManager"
+}
