@@ -25,13 +25,19 @@ class ExchangeRateManager:
     # 절대 하드코딩하지 않음!
     DEFAULT_RATE = None  # 의도적으로 None으로 설정
     
-    def __init__(self, data_dir: str = "data/exchange_rates"):
+    def __init__(self, data_dir: str = None):
         """
         초기화
         
         Args:
             data_dir: 환율 데이터 디렉토리
         """
+        if data_dir is None:
+            # 프로젝트 루트에서 상대 경로로 설정
+            import os
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            data_dir = os.path.join(project_root, "data", "exchange_rates")
+        
         self.data_dir = data_dir
         self.rates_cache = {}
         self.current_rate = None
