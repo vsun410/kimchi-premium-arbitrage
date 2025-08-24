@@ -11,6 +11,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import torch
+from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -198,12 +200,25 @@ class ModelTrainer:
             learning_rate=0.001
         )
         
+        # DataLoader 생성
+        train_dataset = TensorDataset(
+            torch.FloatTensor(X_train_scaled),
+            torch.FloatTensor(y_train.values.reshape(-1, 1))
+        )
+        val_dataset = TensorDataset(
+            torch.FloatTensor(X_val_scaled),
+            torch.FloatTensor(y_val.values.reshape(-1, 1))
+        )
+        
+        train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+        val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False)
+        
         # 학습
         history = lstm_trainer.train(
-            X_train_scaled, y_train.values,
-            X_val_scaled, y_val.values,
-            epochs=20,  # 실제 데이터니까 충분히 학습
-            batch_size=64
+            train_loader=train_loader,
+            val_loader=val_loader,
+            n_epochs=20,  # 실제 데이터니까 충분히 학습
+            early_stopping_patience=5
         )
         
         # 학습 결과
@@ -292,7 +307,7 @@ class ModelTrainer:
         
         # LSTM 저장
         lstm_path = model_dir / f'lstm_model_{timestamp}.pth'
-        lstm_model.save(str(lstm_path))
+        torch.save(lstm_model.model.state_dict(), lstm_path)
         print(f"  LSTM saved: {lstm_path}")
         
         # XGBoost 저장
