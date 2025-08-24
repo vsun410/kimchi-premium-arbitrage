@@ -32,6 +32,10 @@ class MeanReversionStrategy(BaseStrategy):
     def __init__(self, config: Dict[str, Any] = None):
         super().__init__(name="MeanReversion", config=config)
         
+        # config가 None이면 빈 딕셔너리 사용
+        if config is None:
+            config = {}
+        
         # 전략 파라미터
         self.lookback_period = config.get('lookback_period', 48)  # 48시간 MA
         self.entry_threshold = config.get('entry_threshold', -0.02)  # MA - 0.02%
@@ -265,3 +269,35 @@ class MeanReversionStrategy(BaseStrategy):
             'daily_pnl': self.daily_pnl,
             'performance': self.get_performance()
         }
+    
+    def generate_signal(self, data) -> Optional[Dict]:
+        """백테스팅용 신호 생성 메서드"""
+        if len(data) < self.lookback_period:
+            return None
+        
+        # 김프 데이터가 있는지 확인
+        if 'kimchi_premium' not in data.columns:
+            return None
+        
+        # 최근 김프 값과 MA 계산
+        recent_kimchi = data['kimchi_premium'].iloc[-self.lookback_period:]
+        ma = recent_kimchi.mean()
+        current_kimchi = data['kimchi_premium'].iloc[-1]
+        
+        # 진입 조건
+        if current_kimchi < ma + self.entry_threshold:
+            return {
+                'side': 'buy',
+                'amount': 0.1,  # 기본 수량
+                'reason': f'Kimchi {current_kimchi:.3f}% < MA {ma:.3f}%'
+            }
+        
+        # 청산 조건 (포지션이 있다고 가정)
+        if current_kimchi > ma + 0.02:  # MA + 2% 이상
+            return {
+                'side': 'sell',
+                'amount': 0.1,
+                'reason': f'Kimchi {current_kimchi:.3f}% > MA {ma:.3f}% + 2%'
+            }
+        
+        return None
