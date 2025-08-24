@@ -1,0 +1,46 @@
+2025-08-24 19:20:04,187 - kimchi_arbitrage - INFO - Feature engineer initialized: scaler=robust, groups=['price', 'volume', 'technical', 'microstructure', 'time']
+
+============================================================
+  ML MODEL TRAINING WITH REAL DATA
+  Phase 2 Final Step
+============================================================
+2025-08-24 19:20:07,074 - kimchi_arbitrage - INFO - Feature engineer initialized: scaler=robust, groups=['price', 'volume', 'technical', 'microstructure', 'time']
+
+[1/7] Loading historical data...
+  Loading Binance: binance_BTC_USDT_20250824_180733.csv
+  Loading Upbit: upbit_BTC_KRW_20250824_181219.csv
+  Binance: 525,605 candles
+  Upbit: 105,200 candles
+
+[2/7] Calculating Kimchi Premium...
+  Combined data: 105,195 samples
+  Kimchi Premium stats:
+    Mean: 6.74%
+    Std: 4.43%
+    Min: -1.91%
+    Max: 20.35%
+
+[3/7] Feature engineering...
+2025-08-24 19:20:41,178 - kimchi_arbitrage - INFO - Feature engineering complete: 147 features, 105136 samples
+  Features: (104742, 147)
+  Target samples: 104801
+
+[4/7] Splitting data...
+  Train: (67034, 147)
+  Val: (16759, 147)
+  Test: (20949, 147)
+
+[5/7] Training LSTM model...
+2025-08-24 19:20:41,407 - kimchi_arbitrage - INFO - ED-LSTM initialized: input=147, hidden=128, layers=2, attention=True
+2025-08-24 19:20:43,019 - kimchi_arbitrage - INFO - Trainer initialized on cpu
+
+[ERROR] Training failed: LSTMTrainer.train() got an unexpected keyword argument 'epochs'
+2025-08-24 19:20:43,019 - kimchi_arbitrage - ERROR - Training failed: LSTMTrainer.train() got an unexpected keyword argument 'epochs'
+Traceback (most recent call last):
+  File "C:\workshop\kimchi-premium-arbitrage\scripts\train_models.py", line 335, in main
+    lstm_model = trainer.train_lstm(X_train, X_val, y_train, y_val)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\workshop\kimchi-premium-arbitrage\scripts\train_models.py", line 202, in train_lstm
+    history = lstm_trainer.train(
+              ^^^^^^^^^^^^^^^^^^^
+TypeError: LSTMTrainer.train() got an unexpected keyword argument 'epochs'
