@@ -40,7 +40,7 @@ class PerformanceAnalyzer:
             else:
                 return pd.Series()
         else:
-            if not self.portfolio_history:
+            if self.portfolio_history.empty:
                 return pd.Series()
             # 포트폴리오 가치 시계열
             values = pd.Series(
@@ -106,7 +106,7 @@ class PerformanceAnalyzer:
             else:
                 days = len(self.portfolio_history)
         else:
-            if not self.portfolio_history:
+            if self.portfolio_history.empty:
                 return 0
             
             # 총 수익률
@@ -151,7 +151,7 @@ class PerformanceAnalyzer:
             else:
                 return 0
         else:
-            if not self.portfolio_history:
+            if self.portfolio_history.empty:
                 return 0
             values = [p.total_value for p in self.portfolio_history]
         
@@ -209,7 +209,7 @@ class PerformanceAnalyzer:
         Returns:
             Profit Factor
         """
-        if not self.portfolio_history:
+        if self.portfolio_history.empty:
             return 0
         
         gross_profit = 0
@@ -265,7 +265,7 @@ class PerformanceAnalyzer:
     
     def get_performance_summary(self) -> Dict:
         """전체 성과 요약"""
-        if not self.portfolio_history:
+        if self.portfolio_history.empty:
             return {}
         
         initial_value = self.portfolio_history[0].total_value

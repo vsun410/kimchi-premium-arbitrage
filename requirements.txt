@@ -9,10 +9,10 @@ aiofiles>=22.0.0      # 비동기 파일 처리 (Python 3.9+ 호환)
 # ML/DL Libraries (Phase 2-3)
 torch>=2.0.0          # PyTorch (LSTM)
 scikit-learn>=1.3.0   # ML utilities
-xgboost>=2.0.0        # XGBoost
-gymnasium>=1.0.0      # RL environment (OpenAI Gym successor)
+xgboost>=1.7.0        # XGBoost (compatible with Python 3.9)
+gymnasium>=0.29.0     # RL environment (OpenAI Gym successor)
 stable-baselines3>=2.0.0  # RL (PPO/DQN)
-tensorboard>=2.0.0    # Training visualization for RL
+tensorboard>=2.10.0   # Training visualization for RL
 optuna>=3.0.0         # 하이퍼파라미터 튜닝
 shap>=0.43.0          # Model explainability
 ta>=0.11.0            # Technical indicators
