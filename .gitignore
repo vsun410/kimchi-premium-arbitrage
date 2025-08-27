@@ -50,6 +50,12 @@ logs/*.txt
 *.log
 logs/metrics/*.jsonl
 
+# TensorBoard
+ppo_kimchi_tensorboard/
+test_results/tensorboard/
+tensorboard/
+**/events.out.tfevents.*
+
 # MCP Setup files
 GITHUB_MCP_SETUP.md
 NOTION_MCP_TROUBLESHOOTING.md

@@ -289,7 +289,7 @@ class KimchiPremiumTradingEnv(gym.Env):
         
         self.last_portfolio_value = new_value
         
-        return self._get_observation(), reward, done, truncated, info
+        return self._get_observation(), float(reward), done, truncated, info
     
     def _enter_position(self, current: pd.Series) -> float:
         """포지션 진입"""

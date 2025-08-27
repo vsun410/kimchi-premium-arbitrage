@@ -17,7 +17,7 @@ class TestPerformanceAnalyzer:
     @pytest.fixture
     def sample_portfolio_history(self):
         """Create sample portfolio history"""
-        dates = pd.date_range(start='2024-01-01', periods=100, freq='1H')
+        dates = pd.date_range(start='2024-01-01', periods=100, freq='h')
         values = [40000000]
         
         # Simulate portfolio value changes
@@ -106,7 +106,7 @@ class TestPerformanceAnalyzer:
     def test_calculate_sharpe_ratio_zero_std(self):
         """Test Sharpe ratio with zero standard deviation"""
         # Create portfolio with no changes
-        dates = pd.date_range(start='2024-01-01', periods=10, freq='1H')
+        dates = pd.date_range(start='2024-01-01', periods=10, freq='h')
         portfolio = pd.DataFrame({
             'timestamp': dates,
             'value': [40000000] * 10
@@ -137,7 +137,7 @@ class TestPerformanceAnalyzer:
     def test_calculate_max_drawdown_no_loss(self):
         """Test max drawdown with no losses"""
         # Create monotonically increasing portfolio
-        dates = pd.date_range(start='2024-01-01', periods=10, freq='1H')
+        dates = pd.date_range(start='2024-01-01', periods=10, freq='h')
         values = [40000000 + i * 100000 for i in range(10)]
         
         portfolio = pd.DataFrame({

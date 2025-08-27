@@ -219,7 +219,7 @@ class TestIntegrationWithMock:
             async def __aexit__(self, *args):
                 pass
         
-        async def mock_get(self, url, **kwargs):
+        def mock_get(self, url, **kwargs):
             if 'exchangerate-api' in url:
                 return MockResponse(mock_responses['exchangerate-api'])
             elif 'fxratesapi' in url:

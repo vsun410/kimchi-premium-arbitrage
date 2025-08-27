@@ -126,8 +126,21 @@ class PrioritizedReplayBuffer:
             return [], np.array([]), np.array([])
         
         # 우선순위를 확률로 변환
-        priorities = np.array(self.priorities) ** self.alpha
-        probabilities = priorities / (priorities.sum() + self.epsilon)
+        # 버퍼와 우선순위 크기 동기화 확인
+        buffer_size = len(self.buffer)
+        priorities_array = np.array(list(self.priorities)[:buffer_size])
+        
+        # 만약 priorities가 비어있거나 부족하면 균등 분포 사용
+        if len(priorities_array) < buffer_size:
+            priorities_array = np.ones(buffer_size)
+        
+        priorities = priorities_array ** self.alpha
+        prob_sum = priorities.sum()
+        if prob_sum > 0:
+            probabilities = priorities / prob_sum
+        else:
+            # 균등 분포 사용
+            probabilities = np.ones(buffer_size) / buffer_size
         
         # 샘플링
         indices = np.random.choice(

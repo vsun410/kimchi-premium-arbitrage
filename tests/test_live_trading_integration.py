@@ -203,12 +203,12 @@ class TestOrderManager:
             order.filled_price = order.price
             return True
         
-        with patch.object(order_manager, '_wait_for_fill', side_effect=mock_wait):
+        with patch.object(order_manager, '_wait_for_fill', new=AsyncMock(side_effect=mock_wait)):
             result = await order_manager.execute_order(request)
         
         assert result.success == True
         assert result.order is not None
-        assert result.execution_time_ms > 0
+        assert result.execution_time_ms >= 0  # >= 0 since we mock wait_for_fill
     
     def test_statistics(self, order_manager):
         """통계 테스트"""
