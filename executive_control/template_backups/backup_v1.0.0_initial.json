@@ -1,0 +1,494 @@
+{
+  "version": "v1.0.0_initial",
+  "timestamp": "20250827_061553",
+  "created_at": "2025-08-27T06:15:53.111745",
+  "description": "Notion Dashboard Template Backup",
+  "components": {
+    "dashboard": {
+      "page_id": "25bd5479-55ef-8162-a332-d0b7611fee25",
+      "title": "Executive Control Center",
+      "blocks": [
+        {
+          "type": "heading_1",
+          "content": {
+            "text": "Executive Control System"
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": {
+            "text": "프로젝트 비전을 지키며 코드 품질을 관리하는 Executive Board"
+          }
+        },
+        {
+          "type": "divider",
+          "content": {}
+        },
+        {
+          "type": "callout",
+          "content": {}
+        },
+        {
+          "type": "child_database",
+          "content": {}
+        },
+        {
+          "type": "child_database",
+          "content": {}
+        },
+        {
+          "type": "child_database",
+          "content": {}
+        },
+        {
+          "type": "child_database",
+          "content": {}
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "📈 Real-time Metrics"
+          }
+        },
+        {
+          "type": "synced_block",
+          "content": {}
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "🚨 Recent Alerts"
+          }
+        },
+        {
+          "type": "toggle",
+          "content": {}
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "🔄 Component Health"
+          }
+        },
+        {
+          "type": "column_list",
+          "content": {
+            "columns": 0
+          }
+        },
+        {
+          "type": "heading_1",
+          "content": {
+            "text": "Executive Control Center"
+          }
+        },
+        {
+          "type": "quote",
+          "content": {}
+        },
+        {
+          "type": "divider",
+          "content": {}
+        },
+        {
+          "type": "callout",
+          "content": {}
+        },
+        {
+          "type": "column_list",
+          "content": {
+            "columns": 0
+          }
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "📈 Project Progress"
+          }
+        },
+        {
+          "type": "table",
+          "content": {}
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "🔄 System Status"
+          }
+        },
+        {
+          "type": "toggle",
+          "content": {}
+        },
+        {
+          "type": "callout",
+          "content": {}
+        },
+        {
+          "type": "heading_1",
+          "content": {
+            "text": "Executive Control Center"
+          }
+        },
+        {
+          "type": "quote",
+          "content": {}
+        },
+        {
+          "type": "divider",
+          "content": {}
+        },
+        {
+          "type": "callout",
+          "content": {}
+        },
+        {
+          "type": "column_list",
+          "content": {
+            "columns": 0
+          }
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "📈 Project Progress"
+          }
+        },
+        {
+          "type": "table",
+          "content": {}
+        },
+        {
+          "type": "heading_2",
+          "content": {
+            "text": "🔄 System Status"
+          }
+        },
+        {
+          "type": "toggle",
+          "content": {}
+        },
+        {
+          "type": "callout",
+          "content": {}
+        }
+      ],
+      "structure": {
+        "layout": "3-column",
+        "sections": [
+          "Welcome & Quote",
+          "Navigation Bar",
+          "Metrics Dashboard",
+          "Progress Tracking",
+          "System Status"
+        ]
+      }
+    },
+    "databases": {
+      "vision": {
+        "id": "25bd5479-55ef-81da-abdd-f2fc31b96152",
+        "properties": {
+          "Last Edited": {
+            "type": "last_edited_time",
+            "options": null
+          },
+          "Version": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Author": {
+            "type": "people",
+            "options": null
+          },
+          "Type": {
+            "type": "select",
+            "options": [
+              "Core Vision",
+              "Architecture",
+              "Red Lines",
+              "Success Metrics"
+            ]
+          },
+          "Status": {
+            "type": "select",
+            "options": [
+              "Active",
+              "Draft",
+              "Archived"
+            ]
+          },
+          "Title": {
+            "type": "title",
+            "options": null
+          }
+        }
+      },
+      "tasks": {
+        "id": "25bd5479-55ef-81fd-aa68-d9c6a6cfb67a",
+        "properties": {
+          "Assigned To": {
+            "type": "people",
+            "options": null
+          },
+          "Priority": {
+            "type": "select",
+            "options": [
+              "High",
+              "Medium",
+              "Low"
+            ]
+          },
+          "Status": {
+            "type": "select",
+            "options": [
+              "Pending",
+              "In Progress",
+              "In Review",
+              "Approved",
+              "Rejected",
+              "Completed"
+            ]
+          },
+          "Drift Score": {
+            "type": "number",
+            "options": null
+          },
+          "Due Date": {
+            "type": "date",
+            "options": null
+          },
+          "Created": {
+            "type": "created_time",
+            "options": null
+          },
+          "Architecture Score": {
+            "type": "number",
+            "options": null
+          },
+          "Business Score": {
+            "type": "number",
+            "options": null
+          },
+          "Title": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Effort": {
+            "type": "number",
+            "options": null
+          },
+          "Component": {
+            "type": "select",
+            "options": [
+              "trading_core",
+              "ml_engine",
+              "dashboard",
+              "risk_manager",
+              "data_pipeline",
+              "general"
+            ]
+          },
+          "Dependencies": {
+            "type": "multi_select",
+            "options": []
+          },
+          "Task ID": {
+            "type": "title",
+            "options": null
+          }
+        }
+      },
+      "validation": {
+        "id": "25bd5479-55ef-8176-951d-dfe9f4bde87e",
+        "properties": {
+          "Timestamp": {
+            "type": "date",
+            "options": null
+          },
+          "Validator": {
+            "type": "select",
+            "options": [
+              "Vision Guardian",
+              "File Monitor",
+              "Git Hook",
+              "CI/CD"
+            ]
+          },
+          "Commit Hash": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Status": {
+            "type": "select",
+            "options": [
+              "Approved",
+              "Rejected",
+              "Warning",
+              "Block Replaced"
+            ]
+          },
+          "Business Score": {
+            "type": "number",
+            "options": null
+          },
+          "File Path": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Violations": {
+            "type": "multi_select",
+            "options": []
+          },
+          "Drift Score": {
+            "type": "number",
+            "options": null
+          },
+          "Architecture Score": {
+            "type": "number",
+            "options": null
+          },
+          "Task ID": {
+            "type": "title",
+            "options": null
+          }
+        }
+      },
+      "blocks": {
+        "id": "25bd5479-55ef-8163-8947-ea5ed236a5de",
+        "properties": {
+          "Last Modified": {
+            "type": "last_edited_time",
+            "options": null
+          },
+          "Replaceable": {
+            "type": "checkbox",
+            "options": null
+          },
+          "Performance Score": {
+            "type": "number",
+            "options": null
+          },
+          "Component": {
+            "type": "select",
+            "options": [
+              "trading_core",
+              "ml_engine",
+              "dashboard",
+              "risk_manager",
+              "data_pipeline"
+            ]
+          },
+          "Version": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Test Coverage": {
+            "type": "number",
+            "options": null
+          },
+          "Dependencies": {
+            "type": "multi_select",
+            "options": []
+          },
+          "Description": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Function Name": {
+            "type": "rich_text",
+            "options": null
+          },
+          "Tags": {
+            "type": "multi_select",
+            "options": []
+          },
+          "Block ID": {
+            "type": "title",
+            "options": null
+          }
+        }
+      }
+    },
+    "templates": {
+      "dashboard_layout": {
+        "type": "3-column",
+        "columns": [
+          {
+            "title": "Calendar & Time",
+            "widgets": [
+              "clock",
+              "calendar",
+              "todo_list"
+            ]
+          },
+          {
+            "title": "Metrics & Progress",
+            "widgets": [
+              "metrics",
+              "progress_bars",
+              "charts"
+            ]
+          },
+          {
+            "title": "Quick Actions",
+            "widgets": [
+              "shortcuts",
+              "buttons",
+              "notes"
+            ]
+          }
+        ]
+      },
+      "kanban_board": {
+        "type": "board",
+        "groups": [
+          "Backlog",
+          "To Do",
+          "In Progress",
+          "Review",
+          "Done"
+        ],
+        "properties": [
+          "Priority",
+          "Component",
+          "Effort",
+          "Sprint"
+        ]
+      },
+      "second_brain": {
+        "type": "PARA",
+        "structure": {
+          "Projects": "Active projects",
+          "Areas": "Ongoing responsibilities",
+          "Resources": "Reference materials",
+          "Archive": "Completed items"
+        }
+      }
+    },
+    "metadata": {
+      "theme": {
+        "mode": "dark",
+        "primary_color": "#5B9CF6",
+        "success_color": "#4CAF50",
+        "warning_color": "#FFA726",
+        "error_color": "#EF5350"
+      },
+      "icons": {
+        "projects": "🚀",
+        "tasks": "📋",
+        "metrics": "📊",
+        "calendar": "📅",
+        "settings": "⚙️"
+      },
+      "widgets": {
+        "external": [
+          "indify.co",
+          "widgetbox.app"
+        ],
+        "custom": [
+          "notion_widgets.html"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "locked": true,
+  "locked_at": "2025-08-27T06:15:58.720725",
+  "template_version": "1.0.0",
+  "message": "Template locked to prevent accidental changes",
+  "protected_elements": [
+    "dashboard_structure",
+    "3_column_layout",
+    "database_schemas",
+    "widget_placements",
+    "color_theme"
+  ],
+  "allow_additions": true,
+  "allow_modifications": false,
+  "backup_before_change": true
+}

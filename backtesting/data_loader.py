@@ -50,15 +50,15 @@ class DataLoader:
         # Binance 데이터 로드
         self.binance_data = self._load_binance_data()
         
-        # 김치 프리미엄 데이터 로드
-        self.premium_data = self._load_premium_data()
-        
         # 날짜 필터링
         if start_date or end_date:
             self._filter_by_date(start_date, end_date)
         
-        # 데이터 동기화
-        self._synchronize_data()
+        # 김치 프리미엄 계산 (필터링 후)
+        self.premium_data = self._calculate_premium()
+        
+        # 데이터 동기화 (이미 align된 데이터이므로 필요없을 수 있음)
+        # self._synchronize_data()
         
         return {
             'upbit': self.upbit_data,
@@ -68,6 +68,13 @@ class DataLoader:
     
     def _load_upbit_data(self) -> pd.DataFrame:
         """업비트 데이터 로드"""
+        # Try sample data first
+        sample_file = self.data_dir / "upbit_btc_krw_sample.csv"
+        if sample_file.exists():
+            df = pd.read_csv(sample_file, index_col=0, parse_dates=True)
+            logger.info(f"Loaded {len(df)} Upbit sample records")
+            return df
+            
         files = list(self.data_dir.glob("**/upbit_BTC_KRW*.csv"))
         
         if not files:
@@ -94,6 +101,13 @@ class DataLoader:
     
     def _load_binance_data(self) -> pd.DataFrame:
         """바이낸스 데이터 로드"""
+        # Try sample data first
+        sample_file = self.data_dir / "binance_btc_usdt_sample.csv"
+        if sample_file.exists():
+            df = pd.read_csv(sample_file, index_col=0, parse_dates=True)
+            logger.info(f"Loaded {len(df)} Binance sample records")
+            return df
+            
         files = list(self.data_dir.glob("**/binance_BTC_USDT*.csv"))
         
         if not files:

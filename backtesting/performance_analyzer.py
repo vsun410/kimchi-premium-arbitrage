@@ -20,10 +20,10 @@ class PerformanceAnalyzer:
     - 거래별 통계
     """
     
-    def __init__(self, portfolio_history: List, trades: List):
+    def __init__(self, portfolio_history, trades: List):
         """
         Args:
-            portfolio_history: 포트폴리오 히스토리
+            portfolio_history: 포트폴리오 히스토리 (List or DataFrame)
             trades: 거래 기록
         """
         self.portfolio_history = portfolio_history
@@ -31,14 +31,22 @@ class PerformanceAnalyzer:
         
     def calculate_returns(self) -> pd.Series:
         """수익률 계산"""
-        if not self.portfolio_history:
-            return pd.Series()
-        
-        # 포트폴리오 가치 시계열
-        values = pd.Series(
-            [p.total_value for p in self.portfolio_history],
-            index=[p.timestamp for p in self.portfolio_history]
-        )
+        # Handle both DataFrame and List
+        if isinstance(self.portfolio_history, pd.DataFrame):
+            if self.portfolio_history.empty:
+                return pd.Series()
+            if 'value' in self.portfolio_history.columns:
+                values = self.portfolio_history['value']
+            else:
+                return pd.Series()
+        else:
+            if not self.portfolio_history:
+                return pd.Series()
+            # 포트폴리오 가치 시계열
+            values = pd.Series(
+                [p.total_value for p in self.portfolio_history],
+                index=[p.timestamp for p in self.portfolio_history]
+            )
         
         # 일일 수익률
         returns = values.pct_change().dropna()
@@ -80,17 +88,35 @@ class PerformanceAnalyzer:
         Returns:
             Calmar Ratio
         """
-        if not self.portfolio_history:
-            return 0
-        
-        # 총 수익률
-        initial_value = self.portfolio_history[0].total_value
-        final_value = self.portfolio_history[-1].total_value
-        total_return = (final_value - initial_value) / initial_value
-        
-        # 기간 (일)
-        days = (self.portfolio_history[-1].timestamp - 
-                self.portfolio_history[0].timestamp).days
+        # Handle both DataFrame and List
+        if isinstance(self.portfolio_history, pd.DataFrame):
+            if self.portfolio_history.empty:
+                return 0
+            if 'value' not in self.portfolio_history.columns:
+                return 0
+            
+            initial_value = self.portfolio_history['value'].iloc[0]
+            final_value = self.portfolio_history['value'].iloc[-1]
+            total_return = (final_value - initial_value) / initial_value
+            
+            # 기간 (일) - DataFrame의 경우 인덱스 사용
+            if 'timestamp' in self.portfolio_history.columns:
+                days = (self.portfolio_history['timestamp'].iloc[-1] - 
+                       self.portfolio_history['timestamp'].iloc[0]).days
+            else:
+                days = len(self.portfolio_history)
+        else:
+            if not self.portfolio_history:
+                return 0
+            
+            # 총 수익률
+            initial_value = self.portfolio_history[0].total_value
+            final_value = self.portfolio_history[-1].total_value
+            total_return = (final_value - initial_value) / initial_value
+            
+            # 기간 (일)
+            days = (self.portfolio_history[-1].timestamp - 
+                    self.portfolio_history[0].timestamp).days
         
         # 연율화 수익률
         if days > 0:
@@ -116,10 +142,18 @@ class PerformanceAnalyzer:
         Returns:
             최대 낙폭 (비율)
         """
-        if not self.portfolio_history:
-            return 0
-        
-        values = [p.total_value for p in self.portfolio_history]
+        # Handle both DataFrame and List
+        if isinstance(self.portfolio_history, pd.DataFrame):
+            if self.portfolio_history.empty:
+                return 0
+            if 'value' in self.portfolio_history.columns:
+                values = self.portfolio_history['value'].tolist()
+            else:
+                return 0
+        else:
+            if not self.portfolio_history:
+                return 0
+            values = [p.total_value for p in self.portfolio_history]
         
         peak = values[0]
         max_dd = 0
@@ -131,7 +165,7 @@ class PerformanceAnalyzer:
                 dd = (peak - value) / peak
                 max_dd = max(max_dd, dd)
         
-        return max_dd
+        return -max_dd  # Return negative value for drawdown
     
     def calculate_win_rate(self) -> float:
         """승률 계산"""
