@@ -216,8 +216,8 @@ class PerformanceAnalyzer:
         gross_loss = 0
         
         for i in range(1, len(self.portfolio_history)):
-            pnl = (self.portfolio_history[i].total_value - 
-                   self.portfolio_history[i-1].total_value)
+            pnl = (self.portfolio_history.iloc[i]['value'] - 
+                   self.portfolio_history.iloc[i-1]['value'])
             
             if pnl > 0:
                 gross_profit += pnl
@@ -268,13 +268,13 @@ class PerformanceAnalyzer:
         if self.portfolio_history.empty:
             return {}
         
-        initial_value = self.portfolio_history[0].total_value
-        final_value = self.portfolio_history[-1].total_value
+        initial_value = self.portfolio_history.iloc[0]['value']
+        final_value = self.portfolio_history.iloc[-1]['value']
         total_return = (final_value - initial_value) / initial_value
         
         # 기간
-        start_date = self.portfolio_history[0].timestamp
-        end_date = self.portfolio_history[-1].timestamp
+        start_date = self.portfolio_history.iloc[0]['timestamp']
+        end_date = self.portfolio_history.iloc[-1]['timestamp']
         days = (end_date - start_date).days
         
         summary = {
