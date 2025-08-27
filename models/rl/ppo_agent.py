@@ -377,10 +377,23 @@ class TradingMetricsCallback(BaseCallback):
         """학습 종료 시 호출"""
         print("\n=== Training Complete ===")
         print(f"Total Episodes: {len(self.episode_rewards)}")
-        print(f"Final Avg Reward: {np.mean(self.episode_rewards[-100:]):.2f}")
-        print(f"Final Avg Sharpe: {np.mean(self.sharpe_ratios[-100:]):.3f}")
-        print(f"Best Ever Sharpe: {max(self.sharpe_ratios):.3f}")
-        print(f"Final Win Rate: {self.win_rates[-1]:.2%}")
+        
+        if self.episode_rewards:
+            print(f"Final Avg Reward: {np.mean(self.episode_rewards[-100:]):.2f}")
+        else:
+            print("Final Avg Reward: N/A (no episodes)")
+            
+        if self.sharpe_ratios:
+            print(f"Final Avg Sharpe: {np.mean(self.sharpe_ratios[-100:]):.3f}")
+            print(f"Best Ever Sharpe: {max(self.sharpe_ratios):.3f}")
+        else:
+            print("Final Avg Sharpe: N/A (no episodes)")
+            print("Best Ever Sharpe: N/A (no episodes)")
+            
+        if self.win_rates:
+            print(f"Final Win Rate: {self.win_rates[-1]:.2%}")
+        else:
+            print("Final Win Rate: N/A (no episodes)")
 
 
 class AdaptivePPOAgent(PPOAgent):
