@@ -48,6 +48,15 @@ models/rl/*.zip
 logs/*.log
 logs/*.txt
 *.log
+logs/metrics/*.jsonl
+
+# MCP Setup files
+GITHUB_MCP_SETUP.md
+NOTION_MCP_TROUBLESHOOTING.md
+setup_notion_mcp.bat
+setup_notion_mcp.md
+branch_manager.py
+drift_prevention_system.py
 
 # Testing
 .coverage
