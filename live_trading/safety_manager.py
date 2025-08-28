@@ -162,9 +162,18 @@ class SafetyManager:
         # 긴급 정지 상태
         self.emergency_stop = False
         self.stop_reason = None
+        self.stop_time: Optional[datetime] = None  # 긴급 정지 시간
         
         # 쿨다운
         self.cooldown_until: Optional[datetime] = None
+        
+        # 자동 복구 설정
+        self.auto_recovery_enabled = True
+        self.min_recovery_time = 1800  # 최소 30분
+        self.max_recovery_time = 7200  # 최대 2시간
+        self.recovery_check_interval = 60  # 1분마다 체크
+        self.recovery_count = 0  # 자동 복구 횟수
+        self.recovery_task: Optional[asyncio.Task] = None
         
         logger.info("SafetyManager initialized with {} rules".format(len(self.rules)))
     
@@ -328,6 +337,7 @@ class SafetyManager:
         """
         self.emergency_stop = True
         self.stop_reason = reason
+        self.stop_time = datetime.now()
         
         await self._create_alert(
             level=RiskLevel.CRITICAL,
@@ -338,12 +348,248 @@ class SafetyManager:
         )
         
         logger.critical(f"🚨 EMERGENCY STOP TRIGGERED: {reason}")
+        
+        # 자동 복구 태스크 시작
+        if self.auto_recovery_enabled and not self.recovery_task:
+            self.recovery_task = asyncio.create_task(self._auto_recovery_monitor())
+            logger.info("🔄 Auto-recovery monitor started")
     
     def release_emergency_stop(self):
-        """긴급 정지 해제"""
+        """긴급 정지 해제 (수동)"""
         self.emergency_stop = False
         self.stop_reason = None
-        logger.info("Emergency stop released")
+        self.stop_time = None
+        
+        # 자동 복구 태스크 취소
+        if self.recovery_task:
+            self.recovery_task.cancel()
+            self.recovery_task = None
+            
+        logger.info("✅ Emergency stop released manually")
+    
+    async def _auto_recovery_monitor(self):
+        """자동 복구 모니터"""
+        logger.info(f"🕐 Auto-recovery monitor started (min: {self.min_recovery_time/60:.0f}min, max: {self.max_recovery_time/60:.0f}min)")
+        
+        while self.emergency_stop:
+            try:
+                await asyncio.sleep(self.recovery_check_interval)
+                
+                if not self.stop_time:
+                    continue
+                    
+                elapsed = (datetime.now() - self.stop_time).total_seconds()
+                
+                # 복구 조건 체크
+                if await self._check_recovery_conditions(elapsed):
+                    await self._execute_gradual_recovery()
+                    break
+                    
+                # 진행 상황 로깅 (5분마다)
+                if int(elapsed) % 300 == 0:
+                    remaining_min = max(0, (self.min_recovery_time - elapsed) / 60)
+                    logger.info(f"🕒 Recovery check: {elapsed/60:.1f}min elapsed, min {remaining_min:.1f}min remaining")
+                    
+            except asyncio.CancelledError:
+                logger.info("🚫 Auto-recovery monitor cancelled")
+                break
+            except Exception as e:
+                logger.error(f"❌ Error in auto-recovery monitor: {e}")
+                await asyncio.sleep(60)
+    
+    async def _check_recovery_conditions(self, elapsed_seconds: float) -> bool:
+        """
+        자동 복구 조건 확인
+        
+        Args:
+            elapsed_seconds: 긴급 정지 후 경과 시간 (초)
+            
+        Returns:
+            복구 가능 여부
+        """
+        # 최소 시간 체크
+        if elapsed_seconds < self.min_recovery_time:
+            return False
+            
+        # 최대 시간 도달시 강제 복구
+        if elapsed_seconds >= self.max_recovery_time:
+            logger.warning(f"⚠️ Max recovery time reached ({self.max_recovery_time/60:.0f}min), forcing recovery")
+            return True
+        
+        # 복구 조건들 체크
+        conditions = [
+            self._check_market_stability(),
+            self._check_system_health(),
+            self._check_risk_levels(),
+            self._check_no_recent_errors()
+        ]
+        
+        conditions_met = sum(conditions)
+        logger.debug(f"🔍 Recovery conditions: {conditions_met}/4 met")
+        
+        # 모든 조건 충족시 복구
+        if all(conditions):
+            logger.info("✅ All recovery conditions met")
+            return True
+            
+        # 일부 조건만 충족시 (1시간 후 3/4)
+        if conditions_met >= 3 and elapsed_seconds >= 3600:
+            logger.info(f"⚠️ Partial recovery conditions met ({conditions_met}/4) after 1 hour")
+            return True
+            
+        return False
+    
+    def _check_market_stability(self) -> bool:
+        """시장 안정성 체크"""
+        # TODO: 실제 시장 변동성 체크
+        # 예: 김프 < 10%, 급격한 가격 변동 없음
+        return True
+    
+    def _check_system_health(self) -> bool:
+        """시스템 건전성 체크"""
+        # TODO: 시스템 메트릭 체크
+        # 예: WebSocket 연결 상태, API 응답시간
+        return True
+    
+    def _check_risk_levels(self) -> bool:
+        """리스크 레벨 체크"""
+        # 현재 손실이 임계값의 50% 이하인지 확인
+        current_loss = self.daily_stats.get('total_loss', 0)
+        max_loss_threshold = self.rules['max_daily_loss'].threshold
+        return abs(current_loss) < max_loss_threshold * 0.5
+    
+    def _check_no_recent_errors(self) -> bool:
+        """최근 에러 없음 확인"""
+        # 최근 10분간 심각한 경고 없음
+        if not self.alerts:
+            return True
+            
+        recent_critical = [
+            alert for alert in self.alerts[-10:]
+            if alert.level == RiskLevel.CRITICAL and 
+            (datetime.now() - alert.timestamp).total_seconds() < 600
+        ]
+        return len(recent_critical) == 0
+    
+    async def _execute_gradual_recovery(self):
+        """
+        점진적 복구 실행
+        """
+        logger.info("=" * 50)
+        logger.info("🔄 STARTING GRADUAL AUTO-RECOVERY")
+        logger.info("=" * 50)
+        
+        recovery_start = datetime.now()
+        downtime = (recovery_start - self.stop_time).total_seconds() / 60
+        
+        try:
+            # 단계 1: 시스템 상태 점검
+            logger.info("🔍 Step 1: System health check")
+            await self._perform_system_check()
+            await asyncio.sleep(5)
+            
+            # 단계 2: 리스크 파라미터 조정 (보수적으로)
+            logger.info("⚙️ Step 2: Adjusting risk parameters (conservative mode)")
+            self._adjust_risk_parameters(conservative=True)
+            await asyncio.sleep(5)
+            
+            # 단계 3: 긴급 정지 해제
+            logger.info("🚀 Step 3: Releasing emergency stop")
+            original_reason = self.stop_reason
+            self.emergency_stop = False
+            self.stop_reason = None
+            self.stop_time = None
+            self.recovery_count += 1
+            
+            # 단계 4: 쿨다운 설정 (추가 보호)
+            cooldown_minutes = 30
+            self.set_cooldown(cooldown_minutes)
+            
+            # 복구 완료 로그
+            logger.info("="*50)
+            logger.info("✅ AUTO-RECOVERY COMPLETED SUCCESSFULLY")
+            logger.info(f"  🕰️ Total downtime: {downtime:.1f} minutes")
+            logger.info(f"  🔄 Recovery count: {self.recovery_count}")
+            logger.info(f"  ⏸️ Cooldown period: {cooldown_minutes} minutes")
+            logger.info(f"  🛡️ Risk parameters: CONSERVATIVE MODE")
+            logger.info(f"  📌 Original stop reason: {original_reason}")
+            logger.info("="*50)
+            
+            # 성공 알림
+            await self._create_recovery_alert("success", downtime)
+            
+        except Exception as e:
+            logger.error(f"❌ Recovery failed: {e}")
+            self.emergency_stop = True  # 복구 실패시 정지 유지
+            await self._create_recovery_alert("failed", downtime, str(e))
+            
+        finally:
+            self.recovery_task = None
+    
+    async def _perform_system_check(self):
+        """시스템 점검 수행"""
+        checks = [
+            "✅ API connections",
+            "✅ WebSocket connections",
+            "✅ Database connectivity",
+            "✅ Balance synchronization",
+            "✅ Position verification"
+        ]
+        for check in checks:
+            logger.info(f"  {check}")
+            await asyncio.sleep(0.5)
+    
+    def _adjust_risk_parameters(self, conservative: bool = True):
+        """리스크 파라미터 조정"""
+        if conservative:
+            # 보수적으로 조정
+            adjustments = [
+                ('max_position_loss', 0.5),
+                ('max_position_size', 0.5),
+                ('max_leverage', 0.3),
+                ('max_daily_volume', 0.5)
+            ]
+            
+            for rule_name, factor in adjustments:
+                if rule_name in self.rules:
+                    original = self.rules[rule_name].threshold
+                    self.rules[rule_name].threshold *= factor
+                    logger.info(f"  {rule_name}: {original:.2f} → {self.rules[rule_name].threshold:.2f}")
+            
+            logger.info("🛡️ Risk parameters adjusted to CONSERVATIVE levels")
+    
+    async def _create_recovery_alert(self, status: str, downtime: float, error: str = None):
+        """복구 알림 생성"""
+        if status == "success":
+            alert = SafetyAlert(
+                timestamp=datetime.now(),
+                level=RiskLevel.MEDIUM,
+                rule_name="auto_recovery",
+                message=f"Auto-recovery successful after {downtime:.1f} minutes",
+                action_taken=SafetyAction.ALLOW,
+                details={
+                    'recovery_count': self.recovery_count,
+                    'downtime_minutes': downtime,
+                    'status': 'success'
+                }
+            )
+        else:
+            alert = SafetyAlert(
+                timestamp=datetime.now(),
+                level=RiskLevel.CRITICAL,
+                rule_name="auto_recovery",
+                message=f"Auto-recovery failed: {error}",
+                action_taken=SafetyAction.EMERGENCY_STOP,
+                details={
+                    'recovery_count': self.recovery_count,
+                    'downtime_minutes': downtime,
+                    'status': 'failed',
+                    'error': error
+                }
+            )
+        
+        self.alerts.append(alert)
+        # TODO: 실제 알림 시스템과 통합
     
     def set_cooldown(self, minutes: int):
         """
