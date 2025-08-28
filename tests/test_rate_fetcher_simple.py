@@ -8,6 +8,7 @@
 
 import asyncio
 from datetime import datetime, timedelta
+import pytest
 
 import sys
 import os
@@ -100,6 +101,7 @@ def test_no_hardcoding():
     return True
 
 
+@pytest.mark.asyncio
 async def test_mock_api_call():
     """Mock API 호출 테스트"""
     print("\nTesting with mock data...")

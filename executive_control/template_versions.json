@@ -1,0 +1,20 @@
+{
+  "current": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "date": "2025-08-27T06:15:58.722706",
+      "description": "Initial template design",
+      "changes": [
+        "3-column dashboard layout",
+        "Dark mode theme",
+        "Kanban board setup",
+        "Custom widgets",
+        "PARA method for Second Brain"
+      ],
+      "stable": true
+    }
+  ],
+  "protected": true,
+  "auto_backup": true
+}

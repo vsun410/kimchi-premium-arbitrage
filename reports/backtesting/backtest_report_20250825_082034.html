@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>백테스팅 리포트 - Kimchi Premium Arbitrage</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 5px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .positive {
+            color: #27ae60;
+        }
+        .negative {
+            color: #e74c3c;
+        }
+        .chart-container {
+            margin: 30px 0;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 백테스팅 리포트 - Dynamic Hedge Strategy</h1>
+        
+        <h2>📈 성과 요약</h2>
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-value negative">
+                    -0.48%
+                </div>
+                <div class="metric-label">총 수익률</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value">
+                    ₩-194,793
+                </div>
+                <div class="metric-label">총 수익 (KRW)</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value negative">
+                    -2.42%
+                </div>
+                <div class="metric-label">월 평균 수익률</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value">
+                    ₩-973,965
+                </div>
+                <div class="metric-label">월 평균 수익 (KRW)</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value">
+                    -28.13
+                </div>
+                <div class="metric-label">Sharpe Ratio</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value">
+                    0.00
+                </div>
+                <div class="metric-label">Calmar Ratio</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value negative">
+                    --0.49%
+                </div>
+                <div class="metric-label">최대 낙폭</div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-value">
+                    45.5%
+                </div>
+                <div class="metric-label">승률</div>
+            </div>
+        </div>
+        
+        <h2>📊 포트폴리오 가치 추이</h2>
+        <div class="chart-container">
+            <div id="portfolio-chart"></div>
+        </div>
+        
+        <h2>📋 거래 통계</h2>
+        <table>
+            <tr>
+                <th>항목</th>
+                <th>값</th>
+            </tr>
+            <tr>
+                <td>총 거래 횟수</td>
+                <td>290</td>
+            </tr>
+            <tr>
+                <td>업비트 거래</td>
+                <td>145</td>
+            </tr>
+            <tr>
+                <td>바이낸스 거래</td>
+                <td>145</td>
+            </tr>
+            <tr>
+                <td>총 거래 수수료</td>
+                <td>₩116,547</td>
+            </tr>
+            <tr>
+                <td>Profit Factor</td>
+                <td>0.26</td>
+            </tr>
+            <tr>
+                <td>거래 기간</td>
+                <td>6일</td>
+            </tr>
+        </table>
+        
+        <h2>📅 기간</h2>
+        <p>
+            <strong>시작:</strong> 2024-01-01<br>
+            <strong>종료:</strong> 2024-01-07
+        </p>
+        
+        <script>
+            // 포트폴리오 차트
+            var portfolioData = [{"timestamp": "2024-01-01 00:00", "value": 40248412.54894279, "cash_krw": 19194195.0, "cash_usd": 14419.827030915321, "unrealized_pnl": 0.0, "realized_pnl": 0}, {"timestamp": "2024-01-01 01:00", "value": 40252319.716607176, "cash_krw": 19999854.69313268, "cash_usd": 15001.825943314441, "unrealized_pnl": 0, "realized_pnl": 1466.1592919736258}, {"timestamp": "2024-01-01 02:00", "value": 40250732.65498942, "cash_krw": 19194003.252406206, "cash_usd": 14421.97613690547, "unrealized_pnl": 0.0, "realized_pnl": 1466.1592919736258}, {"timestamp": "2024-01-01 03:00", "value": 40252352.85447088, "cash_krw": 19999886.55795141, "cash_usd": 15001.826886310715, "unrealized_pnl": 0, "realized_pnl": 3079.5373030583632}, {"timestamp": "2024-01-01 04:00", "value": 40250767.150480874, "cash_krw": 19194034.453804903, "cash_usd": 14422.98422716835, "unrealized_pnl": 0.0, "realized_pnl": 3079.5373030583632}, {"timestamp": "2024-01-01 05:00", "value": 40244813.6608091, "cash_krw": 19994104.182415955, "cash_usd": 15000.525539550477, "unrealized_pnl": 0, "realized_pnl": 377.0335430810246}, {"timestamp": "2024-01-01 06:00", "value": 40243227.51271857, "cash_krw": 19188403.012926556, "cash_usd": 14421.241784644717, "unrealized_pnl": 0.0, "realized_pnl": 377.0335430810246}, {"timestamp": "2024-01-01 07:00", "value": 40243013.72919211, "cash_krw": 19992194.66514738, "cash_usd": 15000.606714107205, "unrealized_pnl": 0, "realized_pnl": -969.0130168949306}, {"timestamp": "2024-01-01 08:00", "value": 40241427.68063592, "cash_krw": 19186529.530288953, "cash_usd": 14421.370069753824, "unrealized_pnl": 0.0, "realized_pnl": -969.0130168949306}, {"timestamp": "2024-01-01 09:00", "value": 40237311.3459536, "cash_krw": 19989781.27253476, "cash_usd": 14998.170424754693, "unrealized_pnl": 0, "realized_pnl": -2189.0230028209558}, {"timestamp": "2024-01-01 10:00", "value": 40235723.47649832, "cash_krw": 19184230.29938877, "cash_usd": 14417.49905321318, "unrealized_pnl": 0.0, "realized_pnl": -2189.0230028209558}, {"timestamp": "2024-01-01 11:00", "value": 40239496.10762738, "cash_krw": 19991470.488727197, "cash_usd": 14998.537495481616, "unrealized_pnl": 0, "realized_pnl": -1322.5600368287123}, {"timestamp": "2024-01-01 12:00", "value": 40237911.55161782, "cash_krw": 19185875.776652496, "cash_usd": 14420.355381788351, "unrealized_pnl": 0.0, "realized_pnl": -1322.5600368287123}, {"timestamp": "2024-01-01 13:00", "value": 40237285.28950644, "cash_krw": 19987878.112550594, "cash_usd": 14999.560871819147, "unrealized_pnl": 0, "realized_pnl": -2501.4338639143716}, {"timestamp": "2024-01-01 14:00", "value": 40235701.94736581, "cash_krw": 19182327.661054675, "cash_usd": 14422.246033839769, "unrealized_pnl": 0.0, "realized_pnl": -2501.4338639143716}, {"timestamp": "2024-01-01 15:00", "value": 40237696.26169796, "cash_krw": 19987212.38544446, "cash_usd": 15000.358426854445, "unrealized_pnl": 0, "realized_pnl": -1720.5526730255147}, {"timestamp": "2024-01-01 16:00", "value": 40236110.97158867, "cash_krw": 19181653.706285264, "cash_usd": 14421.605300755406, "unrealized_pnl": 0.0, "realized_pnl": -1720.5526730255147}, {"timestamp": "2024-01-01 17:00", "value": 40234302.08237085, "cash_krw": 19984269.733206563, "cash_usd": 15000.023962343917, "unrealized_pnl": 0, "realized_pnl": -3723.6315164146126}, {"timestamp": "2024-01-01 18:00", "value": 40232714.01978916, "cash_krw": 19178779.005517498, "cash_usd": 14419.164764877696, "unrealized_pnl": 0.0, "realized_pnl": -3723.6315164146126}, {"timestamp": "2024-01-01 19:00", "value": 40224782.47320188, "cash_krw": 19980125.035727527, "cash_usd": 14996.042546277298, "unrealized_pnl": 0, "realized_pnl": -6172.988186553974}, {"timestamp": "2024-01-01 20:00", "value": 40223196.50198322, "cash_krw": 19174824.890614025, "cash_usd": 14416.5928834858, "unrealized_pnl": 0.0, "realized_pnl": -6172.988186553974}, {"timestamp": "2024-01-01 21:00", "value": 40225258.11929308, "cash_krw": 19980104.669740956, "cash_usd": 14996.409962631205, "unrealized_pnl": 0, "realized_pnl": -6048.725201353874}, {"timestamp": "2024-01-01 22:00", "value": 40223678.84766426, "cash_krw": 19174795.00219271, "cash_usd": 14421.9349752919, "unrealized_pnl": 0.0, "realized_pnl": -6048.725201353874}, {"timestamp": "2024-01-01 23:00", "value": 40226824.618935235, "cash_krw": 19976336.51648989, "cash_usd": 15000.361557366923, "unrealized_pnl": 0, "realized_pnl": -6021.808428166622}, {"timestamp": "2024-01-02 00:00", "value": 40225239.13736479, "cash_krw": 19170995.487618808, "cash_usd": 14421.305243929746, "unrealized_pnl": 0.0, "realized_pnl": -6021.808428166622}, {"timestamp": "2024-01-02 01:00", "value": 40222228.63935046, "cash_krw": 19972796.449529447, "cash_usd": 14999.57939986742, "unrealized_pnl": 0, "realized_pnl": -6714.140892343617}, {"timestamp": "2024-01-02 02:00", "value": 40220639.87128416, "cash_krw": 19167547.43216965, "cash_usd": 14418.018053936816, "unrealized_pnl": 0.0, "realized_pnl": -6714.140892343617}, {"timestamp": "2024-01-02 03:00", "value": 40222190.51462548, "cash_krw": 19975081.35654166, "cash_usd": 14997.858635617647, "unrealized_pnl": 0, "realized_pnl": -6258.5396189525045}, {"timestamp": "2024-01-02 04:00", "value": 40220600.86052142, "cash_krw": 19169833.102438856, "cash_usd": 14415.639743719921, "unrealized_pnl": 0.0, "realized_pnl": -6258.5396189525045}, {"timestamp": "2024-01-02 05:00", "value": 40219738.76089308, "cash_krw": 19975750.25667429, "cash_usd": 14995.54704016206, "unrealized_pnl": 0, "realized_pnl": -6622.7476669277485}, {"timestamp": "2024-01-02 06:00", "value": 40218149.21375823, "cash_krw": 19170551.08668121, "cash_usd": 14413.371105359256, "unrealized_pnl": 0.0, "realized_pnl": -6622.7476669277485}, {"timestamp": "2024-01-02 07:00", "value": 40212227.85376569, "cash_krw": 19973023.132835876, "cash_usd": 14992.003496985046, "unrealized_pnl": 0, "realized_pnl": -7226.49550310961}, {"timestamp": "2024-01-02 08:00", "value": 40210643.881270096, "cash_krw": 19167974.331203487, "cash_usd": 14413.8496699875, "unrealized_pnl": 0.0, "realized_pnl": -7226.49550310961}, {"timestamp": "2024-01-02 09:00", "value": 40208577.464443006, "cash_krw": 19970564.147764616, "cash_usd": 14991.120975317326, "unrealized_pnl": 0, "realized_pnl": -7387.744751001744}, {"timestamp": "2024-01-02 10:00", "value": 40206994.49708159, "cash_krw": 19165588.426926468, "cash_usd": 14413.658302768245, "unrealized_pnl": 0.0, "realized_pnl": -7387.744751001744}, {"timestamp": "2024-01-02 11:00", "value": 40207857.45617206, "cash_krw": 19969830.678475317, "cash_usd": 14991.130946442028, "unrealized_pnl": 0, "realized_pnl": -6251.80370950267}, {"timestamp": "2024-01-02 12:00", "value": 40206269.51330343, "cash_krw": 19164869.37220275, "cash_usd": 14409.968349983466, "unrealized_pnl": 0.0, "realized_pnl": -6251.80370950267}, {"timestamp": "2024-01-02 13:00", "value": 40201767.49673534, "cash_krw": 19967429.874339215, "cash_usd": 14988.398238811946, "unrealized_pnl": 0, "realized_pnl": -6882.4965518403005}, {"timestamp": "2024-01-02 14:00", "value": 40200180.44548201, "cash_krw": 19162590.489054576, "cash_usd": 14407.806446737211, "unrealized_pnl": 0.0, "realized_pnl": -6882.4965518403005}, {"timestamp": "2024-01-02 15:00", "value": 40202571.79242018, "cash_krw": 19968675.614114884, "cash_usd": 14988.071243189106, "unrealized_pnl": 0, "realized_pnl": -6862.212477126745}, {"timestamp": "2024-01-02 16:00", "value": 40200984.32870585, "cash_krw": 19163820.126830634, "cash_usd": 14407.1855463237, "unrealized_pnl": 0.0, "realized_pnl": -6862.212477126745}, {"timestamp": "2024-01-02 17:00", "value": 40197562.40686858, "cash_krw": 19966615.747150198, "cash_usd": 14985.886414606208, "unrealized_pnl": 0, "realized_pnl": -7128.198007418429}, {"timestamp": "2024-01-02 18:00", "value": 40195977.88215675, "cash_krw": 19161860.54776469, "cash_usd": 14407.105646339596, "unrealized_pnl": 0.0, "realized_pnl": -7128.198007418429}, {"timestamp": "2024-01-02 19:00", "value": 40198847.962869674, "cash_krw": 19966346.212596156, "cash_usd": 14987.038333535937, "unrealized_pnl": 0, "realized_pnl": -4795.298161061659}, {"timestamp": "2024-01-02 20:00", "value": 40197261.31517056, "cash_krw": 19161565.276379503, "cash_usd": 14406.702473834446, "unrealized_pnl": 0.0, "realized_pnl": -4795.298161061659}, {"timestamp": "2024-01-02 21:00", "value": 40192850.03476233, "cash_krw": 19963713.58394225, "cash_usd": 14984.545519125986, "unrealized_pnl": 0, "realized_pnl": -7624.969692208043}, {"timestamp": "2024-01-02 22:00", "value": 40191266.18496193, "cash_krw": 19159052.72624631, "cash_usd": 14406.19530244941, "unrealized_pnl": 0.0, "realized_pnl": -7624.969692208043}, {"timestamp": "2024-01-02 23:00", "value": 40191177.79255837, "cash_krw": 19962016.99288724, "cash_usd": 14984.563555311952, "unrealized_pnl": 0, "realized_pnl": -8135.236869610196}, {"timestamp": "2024-01-03 00:00", "value": 40189594.426849306, "cash_krw": 19157389.61348022, "cash_usd": 14406.547484668828, "unrealized_pnl": 0.0, "realized_pnl": -8135.236869610196}, {"timestamp": "2024-01-03 01:00", "value": 40187372.690936506, "cash_krw": 19959940.236572083, "cash_usd": 14983.283299529203, "unrealized_pnl": 0, "realized_pnl": -6830.029546655724}, {"timestamp": "2024-01-03 02:00", "value": 40185791.02813365, "cash_krw": 19155389.035299536, "cash_usd": 14406.473474056313, "unrealized_pnl": 0.0, "realized_pnl": -6830.029546655724}, {"timestamp": "2024-01-03 03:00", "value": 40188976.03612281, "cash_krw": 19960254.100285895, "cash_usd": 14984.238470990305, "unrealized_pnl": 0, "realized_pnl": -5264.071167633719}, {"timestamp": "2024-01-03 04:00", "value": 40187384.62233289, "cash_krw": 19155670.800042715, "cash_usd": 14400.22224620705, "unrealized_pnl": 0.0, "realized_pnl": -5264.071167633719}, {"timestamp": "2024-01-03 05:00", "value": 40175635.85334761, "cash_krw": 19957604.84975698, "cash_usd": 14976.319261918983, "unrealized_pnl": 0, "realized_pnl": -7107.368784475746}, {"timestamp": "2024-01-03 06:00", "value": 40174048.18999201, "cash_krw": 19153288.61997296, "cash_usd": 14394.886084763753, "unrealized_pnl": 0.0, "realized_pnl": -7107.368784475746}, {"timestamp": "2024-01-03 07:00", "value": 40178067.002191894, "cash_krw": 19958645.45844121, "cash_usd": 14977.349291667173, "unrealized_pnl": 0, "realized_pnl": -6808.981344362553}, {"timestamp": "2024-01-03 08:00", "value": 40176482.97804207, "cash_krw": 19154280.55705733, "cash_usd": 14398.65057123008, "unrealized_pnl": 0.0, "realized_pnl": -6808.981344362553}, {"timestamp": "2024-01-03 09:00", "value": 40174348.740490355, "cash_krw": 19954976.040862214, "cash_usd": 14977.31311083566, "unrealized_pnl": 0, "realized_pnl": -7905.560077768377}, {"timestamp": "2024-01-03 10:00", "value": 40172764.27316467, "cash_krw": 19150685.579077598, "cash_usd": 14398.230643255345, "unrealized_pnl": 0.0, "realized_pnl": -7905.560077768377}, {"timestamp": "2024-01-03 11:00", "value": 40162000.53043029, "cash_krw": 19950145.64002509, "cash_usd": 14971.74436326311, "unrealized_pnl": 0, "realized_pnl": -8756.755801636635}, {"timestamp": "2024-01-03 12:00", "value": 40160418.76815641, "cash_krw": 19146102.389405876, "cash_usd": 14394.484522131308, "unrealized_pnl": 0.0, "realized_pnl": -8756.755801636635}, {"timestamp": "2024-01-03 13:00", "value": 40159642.78146097, "cash_krw": 19947701.55757536, "cash_usd": 14971.80831398934, "unrealized_pnl": 0, "realized_pnl": -6614.759532561071}, {"timestamp": "2024-01-03 14:00", "value": 40158057.76956192, "cash_krw": 19143705.509090513, "cash_usd": 14392.10397142248, "unrealized_pnl": 0.0, "realized_pnl": -6614.759532561071}, {"timestamp": "2024-01-03 15:00", "value": 40154203.34748141, "cash_krw": 19945881.821383025, "cash_usd": 14969.12705636917, "unrealized_pnl": 0, "realized_pnl": -7139.803711024923}, {"timestamp": "2024-01-03 16:00", "value": 40152621.67339771, "cash_krw": 19141994.670366447, "cash_usd": 14391.816977287097, "unrealized_pnl": 0.0, "realized_pnl": -7139.803711024923}, {"timestamp": "2024-01-03 17:00", "value": 40145247.05441569, "cash_krw": 19942817.73216907, "cash_usd": 14964.762460923419, "unrealized_pnl": 0, "realized_pnl": -6632.760350578555}, {"timestamp": "2024-01-03 18:00", "value": 40143665.36333673, "cash_krw": 19139109.88613967, "cash_usd": 14387.306961657656, "unrealized_pnl": 0.0, "realized_pnl": -6632.760350578555}, {"timestamp": "2024-01-03 19:00", "value": 40148253.69979951, "cash_krw": 19942840.125871427, "cash_usd": 14966.973017724502, "unrealized_pnl": 0, "realized_pnl": -5203.4975149010415}, {"timestamp": "2024-01-03 20:00", "value": 40146672.3327067, "cash_krw": 19139072.08680144, "cash_usd": 14389.802335627957, "unrealized_pnl": 0.0, "realized_pnl": -5203.4975149010415}, {"timestamp": "2024-01-03 21:00", "value": 40149425.20866363, "cash_krw": 19943739.813728705, "cash_usd": 14967.174366618461, "unrealized_pnl": 0, "realized_pnl": -2454.587011265971}, {"timestamp": "2024-01-03 22:00", "value": 40147838.918582544, "cash_krw": 19139948.32105126, "cash_usd": 14386.37075292003, "unrealized_pnl": 0.0, "realized_pnl": -2454.587011265971}, {"timestamp": "2024-01-03 23:00", "value": 40148834.77708301, "cash_krw": 19942290.070864964, "cash_usd": 14967.810893494847, "unrealized_pnl": 0, "realized_pnl": -4565.104953925181}, {"timestamp": "2024-01-04 00:00", "value": 40147252.30835067, "cash_krw": 19138510.39862776, "cash_usd": 14389.831983250493, "unrealized_pnl": 0.0, "realized_pnl": -4565.104953925181}, {"timestamp": "2024-01-04 01:00", "value": 40144538.8082866, "cash_krw": 19939858.533257894, "cash_usd": 14966.429833354598, "unrealized_pnl": 0, "realized_pnl": -5871.169390951588}, {"timestamp": "2024-01-04 02:00", "value": 40142956.60190516, "cash_krw": 19136164.866315998, "cash_usd": 14388.581743810139, "unrealized_pnl": 0.0, "realized_pnl": -5871.169390951588}, {"timestamp": "2024-01-04 03:00", "value": 40149218.287087575, "cash_krw": 19941750.59308276, "cash_usd": 14968.494588151718, "unrealized_pnl": 0, "realized_pnl": -3780.2930710078517}, {"timestamp": "2024-01-04 04:00", "value": 40147633.3090069, "cash_krw": 19137963.242975265, "cash_usd": 14388.660729893547, "unrealized_pnl": 0.0, "realized_pnl": -3780.2930710078517}, {"timestamp": "2024-01-04 05:00", "value": 40150842.09122065, "cash_krw": 19942040.627480596, "cash_usd": 14969.482565733368, "unrealized_pnl": 0, "realized_pnl": -3707.7309371297433}, {"timestamp": "2024-01-04 06:00", "value": 40149255.20976099, "cash_krw": 19138220.76881436, "cash_usd": 14388.26146762849, "unrealized_pnl": 0.0, "realized_pnl": -3707.7309371297433}, {"timestamp": "2024-01-04 07:00", "value": 40143908.53914379, "cash_krw": 19939423.21527399, "cash_usd": 14966.285425088743, "unrealized_pnl": 0, "realized_pnl": -5479.469188698943}, {"timestamp": "2024-01-04 08:00", "value": 40142322.897494346, "cash_krw": 19135742.16632033, "cash_usd": 14385.88080127777, "unrealized_pnl": 0.0, "realized_pnl": -5479.469188698943}, {"timestamp": "2024-01-04 09:00", "value": 40139807.551558584, "cash_krw": 19937172.636164896, "cash_usd": 14964.914752143472, "unrealized_pnl": 0, "realized_pnl": -6437.525770917886}, {"timestamp": "2024-01-04 10:00", "value": 40138223.03816069, "cash_krw": 19133573.68898269, "cash_usd": 14385.285889843351, "unrealized_pnl": 0.0, "realized_pnl": -6437.525770917886}, {"timestamp": "2024-01-04 11:00", "value": 40133842.32297543, "cash_krw": 19936312.18796857, "cash_usd": 14961.133433338415, "unrealized_pnl": 0, "realized_pnl": -4668.230359967581}, {"timestamp": "2024-01-04 12:00", "value": 40132263.18168456, "cash_krw": 19132832.664662603, "cash_usd": 14385.399426776043, "unrealized_pnl": 0.0, "realized_pnl": -4668.230359967581}, {"timestamp": "2024-01-04 13:00", "value": 40133395.73962192, "cash_krw": 19934183.61312465, "cash_usd": 14962.379352960947, "unrealized_pnl": 0, "realized_pnl": -5027.614246356836}, {"timestamp": "2024-01-04 14:00", "value": 40131808.9633213, "cash_krw": 19130713.03041742, "cash_usd": 14380.977505388311, "unrealized_pnl": 0.0, "realized_pnl": -5027.614246356836}, {"timestamp": "2024-01-04 15:00", "value": 40132805.58042054, "cash_krw": 19934404.447495807, "cash_usd": 14961.778616981284, "unrealized_pnl": 0, "realized_pnl": -5247.678118528808}, {"timestamp": "2024-01-04 16:00", "value": 40131227.05413336, "cash_krw": 19130945.67977579, "cash_usd": 14386.485249763302, "unrealized_pnl": 0.0, "realized_pnl": -5247.678118528808}, {"timestamp": "2024-01-04 17:00", "value": 40134201.79679393, "cash_krw": 19932778.42009532, "cash_usd": 14964.017316073045, "unrealized_pnl": 0, "realized_pnl": -4856.453141506717}, {"timestamp": "2024-01-04 18:00", "value": 40132620.63735425, "cash_krw": 19129291.700123508, "cash_usd": 14386.792220399053, "unrealized_pnl": 0.0, "realized_pnl": -4856.453141506717}, {"timestamp": "2024-01-04 19:00", "value": 40131510.721508175, "cash_krw": 19932739.141780987, "cash_usd": 14962.053022020138, "unrealized_pnl": 0, "realized_pnl": -1619.3322003345324}, {"timestamp": "2024-01-04 20:00", "value": 40129927.36298308, "cash_krw": 19129306.297136392, "cash_usd": 14383.15743759219, "unrealized_pnl": 0.0, "realized_pnl": -1619.3322003345324}, {"timestamp": "2024-01-04 21:00", "value": 40130002.78024544, "cash_krw": 19931023.74651529, "cash_usd": 14962.206691651962, "unrealized_pnl": 0, "realized_pnl": -4668.128558157612}, {"timestamp": "2024-01-04 22:00", "value": 40128416.799031585, "cash_krw": 19127621.090854775, "cash_usd": 14381.344069870398, "unrealized_pnl": 0.0, "realized_pnl": -4668.128558157612}, {"timestamp": "2024-01-04 23:00", "value": 40128484.769147426, "cash_krw": 19926896.080330353, "cash_usd": 14964.139769494132, "unrealized_pnl": 0, "realized_pnl": -7560.673039538789}, {"timestamp": "2024-01-05 00:00", "value": 40126900.7855927, "cash_krw": 19123523.81525202, "cash_usd": 14384.735863411046, "unrealized_pnl": 0.0, "realized_pnl": -7560.673039538789}, {"timestamp": "2024-01-05 01:00", "value": 40125755.09181074, "cash_krw": 19926185.81180091, "cash_usd": 14962.643911118395, "unrealized_pnl": 0, "realized_pnl": -6260.999407511082}, {"timestamp": "2024-01-05 02:00", "value": 40124175.46082872, "cash_krw": 19122868.194862857, "cash_usd": 14386.426876998368, "unrealized_pnl": 0.0, "realized_pnl": -6260.999407511082}, {"timestamp": "2024-01-05 03:00", "value": 40128598.8830353, "cash_krw": 19926226.94413284, "cash_usd": 14964.719954742564, "unrealized_pnl": 0, "realized_pnl": -5731.834159002015}, {"timestamp": "2024-01-05 04:00", "value": 40127017.557305016, "cash_krw": 19122852.39449447, "cash_usd": 14387.288468539844, "unrealized_pnl": 0.0, "realized_pnl": -5731.834159002015}, {"timestamp": "2024-01-05 05:00", "value": 40120969.00710654, "cash_krw": 19923458.795132566, "cash_usd": 14961.118675536276, "unrealized_pnl": 0, "realized_pnl": -6186.827453251116}, {"timestamp": "2024-01-05 06:00", "value": 40119389.23205648, "cash_krw": 19120236.995610293, "cash_usd": 14384.72384176808, "unrealized_pnl": 0.0, "realized_pnl": -6186.827453251116}, {"timestamp": "2024-01-05 07:00", "value": 40120824.608538955, "cash_krw": 19921659.456886332, "cash_usd": 14962.344556779723, "unrealized_pnl": 0, "realized_pnl": -6005.147044425712}, {"timestamp": "2024-01-05 08:00", "value": 40119239.321565665, "cash_krw": 19118440.548223384, "cash_usd": 14381.860592623465, "unrealized_pnl": 0.0, "realized_pnl": -6005.147044425712}, {"timestamp": "2024-01-05 09:00", "value": 40117148.25040625, "cash_krw": 19922051.993495878, "cash_usd": 14959.33056067435, "unrealized_pnl": 0, "realized_pnl": -4470.514505031339}, {"timestamp": "2024-01-05 10:00", "value": 40115566.23960843, "cash_krw": 19118906.685522746, "cash_usd": 14381.221300936853, "unrealized_pnl": 0.0, "realized_pnl": -4470.514505031339}, {"timestamp": "2024-01-05 11:00", "value": 40113775.42026573, "cash_krw": 19920535.455951143, "cash_usd": 14957.955529121915, "unrealized_pnl": 0, "realized_pnl": -4862.85924988524}, {"timestamp": "2024-01-05 12:00", "value": 40112193.64594307, "cash_krw": 19117457.672037423, "cash_usd": 14379.971593514005, "unrealized_pnl": 0.0, "realized_pnl": -4862.85924988524}, {"timestamp": "2024-01-05 13:00", "value": 40108010.04551466, "cash_krw": 19919823.11143407, "cash_usd": 14954.2125437634, "unrealized_pnl": 0, "realized_pnl": -4067.271569375641}, {"timestamp": "2024-01-05 14:00", "value": 40106433.41853923, "cash_krw": 19116860.750322863, "cash_usd": 14379.959772439644, "unrealized_pnl": 0.0, "realized_pnl": -4067.271569375641}, {"timestamp": "2024-01-05 15:00", "value": 40107011.31332718, "cash_krw": 19915642.4619998, "cash_usd": 14956.56951950176, "unrealized_pnl": 0, "realized_pnl": -5101.972135657159}, {"timestamp": "2024-01-05 16:00", "value": 40105426.10544663, "cash_krw": 19112700.09550699, "cash_usd": 14375.939355107237, "unrealized_pnl": 0.0, "realized_pnl": -5101.972135657159}, {"timestamp": "2024-01-05 17:00", "value": 40101027.602203816, "cash_krw": 19914121.192292616, "cash_usd": 14953.264007341626, "unrealized_pnl": 0, "realized_pnl": -5263.034140647577}, {"timestamp": "2024-01-05 18:00", "value": 40099444.36195838, "cash_krw": 19111298.619696494, "cash_usd": 14374.004071721445, "unrealized_pnl": 0.0, "realized_pnl": -5263.034140647577}, {"timestamp": "2024-01-05 19:00", "value": 40100488.04697171, "cash_krw": 19915893.79813116, "cash_usd": 14951.551295437439, "unrealized_pnl": 0, "realized_pnl": -2316.0100255263774}, {"timestamp": "2024-01-05 20:00", "value": 40098910.19392459, "cash_krw": 19113082.027430788, "cash_usd": 14376.277866209293, "unrealized_pnl": 0.0, "realized_pnl": -2316.0100255263774}, {"timestamp": "2024-01-05 21:00", "value": 40098631.530976, "cash_krw": 19914085.12738359, "cash_usd": 14951.515854512892, "unrealized_pnl": 0, "realized_pnl": -181.6359639428788}, {"timestamp": "2024-01-05 22:00", "value": 40097048.991444714, "cash_krw": 19111310.52413345, "cash_usd": 14372.739952614704, "unrealized_pnl": 0.0, "realized_pnl": -181.6359639428788}, {"timestamp": "2024-01-05 23:00", "value": 40092213.44852872, "cash_krw": 19910019.714577362, "cash_usd": 14949.773136260264, "unrealized_pnl": 0, "realized_pnl": -938.573383535461}, {"timestamp": "2024-01-06 00:00", "value": 40090632.157934174, "cash_krw": 19107373.601337817, "cash_usd": 14371.828120037922, "unrealized_pnl": 0.0, "realized_pnl": -938.573383535461}, {"timestamp": "2024-01-06 01:00", "value": 40091578.00088657, "cash_krw": 19908588.51738578, "cash_usd": 14950.362580370953, "unrealized_pnl": 0, "realized_pnl": -2397.17102371193}, {"timestamp": "2024-01-06 02:00", "value": 40089994.009130344, "cash_krw": 19105955.12580803, "cash_usd": 14370.405279337889, "unrealized_pnl": 0.0, "realized_pnl": -2397.17102371193}, {"timestamp": "2024-01-06 03:00", "value": 40091256.211571544, "cash_krw": 19909904.860954203, "cash_usd": 14949.149148605435, "unrealized_pnl": 0, "realized_pnl": -2768.8899447468725}, {"timestamp": "2024-01-06 04:00", "value": 40089678.9201913, "cash_krw": 19107277.91159854, "cash_usd": 14374.155280259585, "unrealized_pnl": 0.0, "realized_pnl": -2768.8899447468725}, {"timestamp": "2024-01-06 05:00", "value": 40088007.78730052, "cash_krw": 19906111.404387668, "cash_usd": 14949.552876231743, "unrealized_pnl": 0, "realized_pnl": -1725.482292010109}, {"timestamp": "2024-01-06 06:00", "value": 40086424.058948904, "cash_krw": 19103549.48848591, "cash_usd": 14369.73793988836, "unrealized_pnl": 0.0, "realized_pnl": -1725.482292010109}, {"timestamp": "2024-01-06 07:00", "value": 40080839.384583, "cash_krw": 19903501.04037206, "cash_usd": 14946.176551267361, "unrealized_pnl": 0, "realized_pnl": -1690.5118347131213}, {"timestamp": "2024-01-06 08:00", "value": 40079256.432028666, "cash_krw": 19101082.635892708, "cash_usd": 14366.830549481483, "unrealized_pnl": 0.0, "realized_pnl": -1690.5118347131213}, {"timestamp": "2024-01-06 09:00", "value": 40078727.37224334, "cash_krw": 19902475.3094643, "cash_usd": 14945.371898354844, "unrealized_pnl": 0, "realized_pnl": -1724.2423566117177}, {"timestamp": "2024-01-06 10:00", "value": 40077147.079877764, "cash_krw": 19100099.187471986, "cash_usd": 14367.967056914586, "unrealized_pnl": 0.0, "realized_pnl": -1724.2423566117177}, {"timestamp": "2024-01-06 11:00", "value": 40078884.27563229, "cash_krw": 19904668.889484316, "cash_usd": 14943.863248998503, "unrealized_pnl": 0, "realized_pnl": 2065.090262942084}, {"timestamp": "2024-01-06 12:00", "value": 40077302.229428194, "cash_krw": 19102289.626286156, "cash_usd": 14365.160295589263, "unrealized_pnl": 0.0, "realized_pnl": 2065.090262942084}, {"timestamp": "2024-01-06 13:00", "value": 40072463.728462785, "cash_krw": 19903244.345660098, "cash_usd": 14940.162505779765, "unrealized_pnl": 0, "realized_pnl": 2005.2944417387257}, {"timestamp": "2024-01-06 14:00", "value": 40070886.8460726, "cash_krw": 19100993.621816274, "cash_usd": 14365.193210423678, "unrealized_pnl": 0.0, "realized_pnl": 2005.2944417387257}, {"timestamp": "2024-01-06 15:00", "value": 40071856.32239333, "cash_krw": 19899511.30656276, "cash_usd": 14942.477789504122, "unrealized_pnl": 0, "realized_pnl": 2134.6620222233937}, {"timestamp": "2024-01-06 16:00", "value": 40070277.65695277, "cash_krw": 19097272.742988445, "cash_usd": 14366.177387713567, "unrealized_pnl": 0.0, "realized_pnl": 2134.6620222233937}, {"timestamp": "2024-01-06 17:00", "value": 40067551.155682355, "cash_krw": 19896370.198408704, "cash_usd": 14941.615523906412, "unrealized_pnl": 0, "realized_pnl": 3333.984357263421}, {"timestamp": "2024-01-06 18:00", "value": 40065967.90610799, "cash_krw": 19094217.824271943, "cash_usd": 14361.852227755842, "unrealized_pnl": 0.0, "realized_pnl": 3333.984357263421}, {"timestamp": "2024-01-06 19:00", "value": 40062923.93551436, "cash_krw": 19894402.684055146, "cash_usd": 14939.645371451274, "unrealized_pnl": 0, "realized_pnl": 58.588170851093764}, {"timestamp": "2024-01-06 20:00", "value": 40061342.73256189, "cash_krw": 19092342.946866147, "cash_usd": 14361.33098757219, "unrealized_pnl": 0.0, "realized_pnl": 58.588170851093764}, {"timestamp": "2024-01-06 21:00", "value": 40060191.53764936, "cash_krw": 19891219.50401262, "cash_usd": 14939.979284175364, "unrealized_pnl": 0, "realized_pnl": -2209.393912475002}, {"timestamp": "2024-01-06 22:00", "value": 40058610.8854574, "cash_krw": 19089214.46942888, "cash_usd": 14362.032758565929, "unrealized_pnl": 0.0, "realized_pnl": -2209.393912475002}, {"timestamp": "2024-01-06 23:00", "value": 40055205.03022606, "cash_krw": 19890655.893331088, "cash_usd": 14936.703064366644, "unrealized_pnl": 0, "realized_pnl": -2646.2088381643202}, {"timestamp": "2024-01-07 00:00", "value": 40053619.56038151, "cash_krw": 19088750.68862596, "cash_usd": 14355.110390525164, "unrealized_pnl": 0.0, "realized_pnl": -2646.2088381643202}];
+            
+            var trace1 = {
+                x: portfolioData.map(d => d.timestamp),
+                y: portfolioData.map(d => d.value),
+                type: 'scatter',
+                mode: 'lines',
+                name: '포트폴리오 가치',
+                line: {color: '#3498db', width: 2}
+            };
+            
+            var layout = {
+                title: '포트폴리오 가치 변화',
+                xaxis: {title: '시간'},
+                yaxis: {title: '가치 (KRW)', tickformat: ',.0f'},
+                hovermode: 'x unified'
+            };
+            
+            Plotly.newPlot('portfolio-chart', [trace1], layout);
+        </script>
+    </div>
+</body>
+</html>

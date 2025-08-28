@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Custom Widgets</title>
+    <style>
+        /* 다크모드 디자인 */
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #191919;
+            color: #E0E0E0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* 프로젝트 진행률 카드 */
+        .progress-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .progress-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            border-radius: 10px;
+            transition: width 1s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 실시간 시계 위젯 */
+        .clock-widget {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .time-display {
+            font-size: 48px;
+            font-weight: 300;
+            color: white;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .date-display {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 1px;
+        }
+
+        /* 코드 품질 메트릭 */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: #2F3437;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(91, 156, 246, 0.2);
+            border-color: #5B9CF6;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #5B9CF6 0%, #29B6F6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #9E9E9E;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* 태스크 카운터 */
+        .task-counter {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .task-item {
+            text-align: center;
+        }
+
+        .task-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .task-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* 김프 지표 */
+        .kimp-indicator {
+            background: #2F3437;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kimp-indicator.positive {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+        }
+
+        .kimp-indicator.negative {
+            border-color: #EF5350;
+            background: linear-gradient(135deg, rgba(239, 83, 80, 0.1), rgba(239, 83, 80, 0.05));
+        }
+
+        .kimp-title {
+            font-size: 14px;
+            color: #9E9E9E;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .kimp-value {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .kimp-positive { color: #4CAF50; }
+        .kimp-negative { color: #EF5350; }
+
+        .kimp-change {
+            font-size: 14px;
+            color: #9E9E9E;
+        }
+
+        /* 애니메이션 배경 */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: linear-gradient(45deg, #191919 25%, #1e1e1e 25%, #1e1e1e 50%, #191919 50%, #191919 75%, #1e1e1e 75%, #1e1e1e);
+            background-size: 40px 40px;
+            animation: move 4s linear infinite;
+        }
+
+        @keyframes move {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
+        }
+
+        /* Quote Widget */
+        .quote-widget {
+            background: linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 52%, #2BFF88 90%);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 20px;
+            position: relative;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .quote-text {
+            font-size: 20px;
+            font-weight: 500;
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .quote-author {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Status Dots */
+        .status-container {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            padding: 20px;
+            background: #2F3437;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.online {
+            background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-dot.busy {
+            background: #FFA726;
+            box-shadow: 0 0 10px rgba(255, 167, 38, 0.5);
+        }
+
+        .status-dot.offline {
+            background: #EF5350;
+            box-shadow: 0 0 10px rgba(239, 83, 80, 0.5);
+        }
+
+        .status-label {
+            font-size: 14px;
+            color: #9E9E9E;
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+
+    <!-- 실시간 시계 -->
+    <div class="clock-widget">
+        <div class="time-display" id="time">00:00:00</div>
+        <div class="date-display" id="date">Loading...</div>
+    </div>
+
+    <!-- 명언 위젯 -->
+    <div class="quote-widget">
+        <div class="quote-text" id="quote">
+            "The best time to plant a tree was 20 years ago. The second best time is now."
+        </div>
+        <div class="quote-author">- Chinese Proverb</div>
+    </div>
+
+    <!-- 프로젝트 진행률 -->
+    <div class="progress-card">
+        <div class="progress-title">🚀 Kimchi Premium Trading System</div>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 65%;"></div>
+        </div>
+        <div class="progress-text">
+            <span>Progress</span>
+            <span>65%</span>
+        </div>
+    </div>
+
+    <!-- 코드 품질 메트릭 -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">92%</div>
+            <div class="metric-label">Code Quality</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">5.2%</div>
+            <div class="metric-label">Code Drift</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">87%</div>
+            <div class="metric-label">Test Coverage</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">1.5</div>
+            <div class="metric-label">Sharpe Ratio</div>
+        </div>
+    </div>
+
+    <!-- 태스크 카운터 -->
+    <div class="task-counter">
+        <div class="task-item">
+            <div class="task-number">42</div>
+            <div class="task-label">Completed</div>
+        </div>
+        <div class="task-item">
+            <div class="task-number">7</div>
+            <div class="task-label">In Progress</div>
+        </div>
+        <div class="task-item">
+            <div class="task-number">51</div>
+            <div class="task-label">Pending</div>
+        </div>
+    </div>
+
+    <!-- 김치프리미엄 지표 -->
+    <div class="kimp-indicator positive">
+        <div class="kimp-title">Kimchi Premium</div>
+        <div class="kimp-value kimp-positive">+3.25%</div>
+        <div class="kimp-change">↑ 0.15% from yesterday</div>
+    </div>
+
+    <!-- 시스템 상태 -->
+    <div class="status-container">
+        <div class="status-item">
+            <div class="status-dot online"></div>
+            <div class="status-label">Trading Core</div>
+        </div>
+        <div class="status-item">
+            <div class="status-dot online"></div>
+            <div class="status-label">ML Engine</div>
+        </div>
+        <div class="status-item">
+            <div class="status-dot busy"></div>
+            <div class="status-label">Dashboard</div>
+        </div>
+    </div>
+
+    <script>
+        // 실시간 시계 업데이트
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('ko-KR', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const date = now.toLocaleDateString('ko-KR', { 
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                weekday: 'long'
+            });
+            
+            document.getElementById('time').textContent = time;
+            document.getElementById('date').textContent = date;
+        }
+
+        // 명언 로테이션
+        const quotes = [
+            { text: "Code is like humor. When you have to explain it, it's bad.", author: "Cory House" },
+            { text: "First, solve the problem. Then, write the code.", author: "John Johnson" },
+            { text: "Experience is the name everyone gives to their mistakes.", author: "Oscar Wilde" },
+            { text: "In order to be irreplaceable, one must always be different.", author: "Coco Chanel" },
+            { text: "Simplicity is the soul of efficiency.", author: "Austin Freeman" }
+        ];
+
+        let quoteIndex = 0;
+        function rotateQuote() {
+            const quote = quotes[quoteIndex];
+            document.getElementById('quote').textContent = `"${quote.text}"`;
+            document.querySelector('.quote-author').textContent = `- ${quote.author}`;
+            quoteIndex = (quoteIndex + 1) % quotes.length;
+        }
+
+        // 초기화
+        updateClock();
+        setInterval(updateClock, 1000);
+        setInterval(rotateQuote, 10000); // 10초마다 명언 변경
+
+        // 프로그레스 바 애니메이션
+        setTimeout(() => {
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                bar.style.width = bar.style.width;
+            });
+        }, 100);
+    </script>
+</body>
+</html>

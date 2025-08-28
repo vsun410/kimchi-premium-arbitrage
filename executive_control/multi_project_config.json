@@ -1,0 +1,125 @@
+{
+  "workspace_name": "Multi-Project Crypto Trading Workspace",
+  "created_at": "2025-08-27T07:18:44.339679",
+  "projects": {
+    "trading_core": {
+      "name": "Trading Core - Ultra-Low Latency Execution Engine",
+      "emoji": "⚡",
+      "description": "High-frequency trading engine with sub-millisecond latency",
+      "components": [
+        "Order Execution",
+        "Market Data Handler",
+        "Latency Monitor",
+        "Connection Pool"
+      ],
+      "tech_stack": [
+        "C++",
+        "WebSocket",
+        "FIX Protocol",
+        "Redis"
+      ],
+      "priorities": [
+        "Latency",
+        "Reliability",
+        "Throughput"
+      ]
+    },
+    "ml_engine": {
+      "name": "ML Engine - Quantitative Research & Execution Platform",
+      "emoji": "🤖",
+      "description": "Advanced ML models for market prediction and signal generation",
+      "components": [
+        "Feature Engineering",
+        "Model Training",
+        "Inference Engine",
+        "Backtesting"
+      ],
+      "tech_stack": [
+        "Python",
+        "PyTorch",
+        "Pandas",
+        "NumPy",
+        "Ray"
+      ],
+      "priorities": [
+        "Accuracy",
+        "Speed",
+        "Scalability"
+      ]
+    },
+    "dashboard": {
+      "name": "Dashboard - Professional Trading Terminal",
+      "emoji": "📊",
+      "description": "Real-time trading dashboard with advanced analytics",
+      "components": [
+        "Real-time Charts",
+        "Portfolio View",
+        "Risk Metrics",
+        "Alert System"
+      ],
+      "tech_stack": [
+        "React",
+        "TypeScript",
+        "WebSocket",
+        "D3.js"
+      ],
+      "priorities": [
+        "User Experience",
+        "Real-time Updates",
+        "Performance"
+      ]
+    },
+    "risk_management": {
+      "name": "Risk Management - Automated Risk Controls",
+      "emoji": "🛡️",
+      "description": "Comprehensive risk management and position sizing system",
+      "components": [
+        "Position Sizing",
+        "Risk Limits",
+        "Drawdown Control",
+        "Emergency Stop"
+      ],
+      "tech_stack": [
+        "Python",
+        "PostgreSQL",
+        "Redis",
+        "Kafka"
+      ],
+      "priorities": [
+        "Safety",
+        "Compliance",
+        "Automation"
+      ]
+    }
+  },
+  "notion_resources": {
+    "projects": {
+      "trading_core": {
+        "page": "25bd5479-55ef-8148-b870-ecec374555fc",
+        "tasks_db": "25bd5479-55ef-81ae-aa56-e9cdc0709dcd",
+        "docs_db": "25bd5479-55ef-81ec-b439-d0241a5b8f41"
+      },
+      "ml_engine": {
+        "page": "25bd5479-55ef-815c-8da8-f787e482d7f0",
+        "tasks_db": "25bd5479-55ef-818e-8e5b-cb1129a86824",
+        "docs_db": "25bd5479-55ef-81ce-be55-ee80905fc7be"
+      },
+      "dashboard": {
+        "page": "25bd5479-55ef-81ee-937d-ec4c4963af27",
+        "tasks_db": "25bd5479-55ef-8172-86ed-e57b523fccab",
+        "docs_db": "25bd5479-55ef-8182-8f8f-e7f6352cad9e"
+      },
+      "risk_management": {
+        "page": "25bd5479-55ef-8146-aa88-f0bb1292abe1",
+        "tasks_db": "25bd5479-55ef-8135-89b2-f7fcbe2dbf0b",
+        "docs_db": "25bd5479-55ef-8174-aec9-ff66a089477b"
+      }
+    },
+    "master_dashboard": "25bd5479-55ef-81e8-827c-fca2f68ee2a5",
+    "shared_databases": {
+      "adr": "25bd5479-55ef-81f3-a022-e5c4e567eacf",
+      "dependencies": "25bd5479-55ef-81fb-a3b6-c5da1cf6b8b9",
+      "research": "25bd5479-55ef-817e-9f36-fc4b189e8877"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "components": {
+    "trading_core": {
+      "interfaces": [
+        "WebSocket",
+        "REST API"
+      ],
+      "constraints": [
+        "latency < 100ms",
+        "stateless"
+      ]
+    },
+    "ml_engine": {
+      "interfaces": [
+        "gRPC",
+        "Message Queue"
+      ],
+      "constraints": [
+        "prediction_time < 500ms"
+      ]
+    },
+    "dashboard": {
+      "interfaces": [
+        "REST API",
+        "WebSocket"
+      ],
+      "constraints": [
+        "real-time updates",
+        "responsive UI"
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "initialized": true,
+  "components": {
+    "vision_guardian": true,
+    "task_orchestrator": true,
+    "notion_integration": true,
+    "claude_interceptor": true
+  }
+}
