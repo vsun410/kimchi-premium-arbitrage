@@ -54,8 +54,10 @@ class Backtest(BaseModel):
     daily_returns = Column(JSON)  # Daily return series
     
     # Execution info
+    status = Column(String(20), default="pending")  # pending, running, completed, failed, cancelled
     executed_at = Column(DateTime)
     execution_time = Column(Float)  # in seconds
+    error_message = Column(Text)  # Error message if failed
     
     # Relationships
     strategy = relationship("Strategy", back_populates="backtests")

@@ -176,6 +176,18 @@ class WebSocketManager:
     async def emit_alert(self, alert_data: Dict[str, Any]):
         """Emit alert to all clients"""
         await self.sio.emit('alert.new', alert_data)
+    
+    async def emit_backtest_progress(self, progress_data: Dict[str, Any]):
+        """Emit backtest progress update"""
+        if 'backtests' in self.subscriptions:
+            for sid in self.subscriptions['backtests']:
+                await self.sio.emit('backtest.progress', progress_data, to=sid)
+    
+    async def emit_paper_trading_update(self, update_data: Dict[str, Any]):
+        """Emit paper trading update"""
+        if 'paper_trading' in self.subscriptions:
+            for sid in self.subscriptions['paper_trading']:
+                await self.sio.emit('paper_trading.update', update_data, to=sid)
 
 
 # Create global instance
