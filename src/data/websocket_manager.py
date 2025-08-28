@@ -12,7 +12,10 @@ from typing import Any, Callable, Dict, List, Optional
 import ccxt.pro as ccxt_pro
 
 from src.models.schemas import Exchange, OrderBookData, PriceData, Symbol
-from src.utils.logger import logger
+from src.utils.logger import LoggerManager
+from src.data.reconnect_manager import reconnect_manager, ConnectionState
+
+logger = LoggerManager(__name__)
 from src.utils.metrics import MetricsTimer, metrics_collector
 
 
@@ -27,6 +30,10 @@ class WebSocketManager:
         self.reconnect_attempts = {}
         self.max_reconnect_attempts = 10
         self.reconnect_delay = 5  # 초
+        
+        # ReconnectManager에 연결 등록
+        reconnect_manager.register_connection("upbit")
+        reconnect_manager.register_connection("binance")
 
         # 데이터 버퍼 (연결 끊김 시 데이터 보존)
         self.data_buffer = {"upbit": deque(maxlen=1000), "binance": deque(maxlen=1000)}
@@ -88,6 +95,7 @@ class WebSocketManager:
                 self.connection_status[exchange_id] = True
                 self.last_heartbeat[exchange_id] = datetime.now()
                 self.reconnect_attempts[exchange_id] = 0
+                reconnect_manager.update_data_timestamp(exchange_id)
 
                 # 데이터 처리
                 processed_data = self._process_ticker(exchange_id, ticker)
@@ -298,28 +306,45 @@ class WebSocketManager:
             return 0
 
     async def _handle_reconnection(self, exchange_id: str, data_type: str, *args):
-        """재연결 처리"""
+        """재연결 처리 - ReconnectManager 사용"""
         self.connection_status[exchange_id] = False
-
-        if exchange_id not in self.reconnect_attempts:
-            self.reconnect_attempts[exchange_id] = 0
-
-        self.reconnect_attempts[exchange_id] += 1
-
-        if self.reconnect_attempts[exchange_id] > self.max_reconnect_attempts:
-            logger.critical(f"Max reconnection attempts reached for {exchange_id}")
-            return
-
-        delay = self.reconnect_delay * (2 ** min(self.reconnect_attempts[exchange_id] - 1, 5))
-        logger.warning(
-            f"Reconnecting {exchange_id} {data_type} in {delay} seconds... "
-            f"(attempt {self.reconnect_attempts[exchange_id]})"
-        )
-
-        await asyncio.sleep(delay)
-
+        
+        # ReconnectManager에 연결 끊김 알림
+        reconnect_manager.on_disconnected(exchange_id)
+        
         # 재연결 시도
-        logger.info(f"Attempting to reconnect {exchange_id} {data_type}")
+        async def reconnect_func():
+            """재연결 함수"""
+            try:
+                # 거래소 재초기화
+                if exchange_id == "upbit":
+                    self.exchanges[exchange_id] = ccxt_pro.upbit(
+                        {
+                            "enableRateLimit": True,
+                            "options": {"defaultType": "spot", "watchOrderBook": {"depth": 20}},
+                        }
+                    )
+                elif exchange_id == "binance":
+                    self.exchanges[exchange_id] = ccxt_pro.binance(
+                        {
+                            "enableRateLimit": True,
+                            "options": {"defaultType": "future", "watchOrderBook": {"depth": 20}},
+                        }
+                    )
+                logger.info(f"Reconnected {exchange_id} successfully")
+                self.connection_status[exchange_id] = True
+                reconnect_manager.on_connected(exchange_id)
+                return True
+            except Exception as e:
+                logger.error(f"Failed to reconnect {exchange_id}: {e}")
+                raise
+        
+        # ReconnectManager를 통한 재연결
+        success = await reconnect_manager.reconnect(exchange_id, reconnect_func)
+        
+        if not success:
+            logger.critical(f"Failed to reconnect {exchange_id} after all attempts")
+            self.connection_status[exchange_id] = False
 
     async def start(self, symbols: Dict[str, List[str]]):
         """
