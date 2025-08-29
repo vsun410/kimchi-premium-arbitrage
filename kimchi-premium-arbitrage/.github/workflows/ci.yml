@@ -59,24 +59,29 @@ jobs:
     
     - name: Run minimal test
       run: |
-        cd backend
+        echo "Current directory: $(pwd)"
+        echo "Listing files:"
+        ls -la
         echo "Python version:"
         python --version
         echo "Running minimal test..."
-        # Run test without loading conftest to avoid dependency issues
-        python -m pytest tests/test_minimal.py -v --confcutdir=tests
+        # Run test directly without cd
+        python -m pytest backend/tests/test_minimal.py -v --confcutdir=backend/tests
         echo "Minimal test completed successfully!"
     
     - name: Install backend dependencies
       run: |
         echo "Installing backend dependencies..."
-        pip install -r backend/requirements.txt || echo "Some dependencies failed to install"
+        if [ -f "backend/requirements.txt" ]; then
+          pip install -r backend/requirements.txt || echo "Some dependencies failed to install"
+        else
+          echo "No backend/requirements.txt found"
+        fi
       continue-on-error: true
     
     - name: Run basic tests
       run: |
-        cd backend
-        python -m pytest tests/test_simple.py tests/test_basic.py -v || echo "Basic tests completed with some failures"
+        python -m pytest backend/tests/test_simple.py backend/tests/test_basic.py -v || echo "Basic tests completed with some failures"
       env:
         PYTHONPATH: ${{ github.workspace }}/backend
         CI: true
@@ -115,10 +120,12 @@ jobs:
     
     - name: Run Bandit security linter
       run: |
-        if [ -d "src/" ]; then
-          bandit -r src/ -f json
-        elif [ -d "backend/app/" ]; then
+        if [ -d "backend/app/" ]; then
           bandit -r backend/app/ -f json
+        elif [ -d "src/" ]; then
+          bandit -r src/ -f json
+        else
+          echo "No Python source directory found"
         fi
       continue-on-error: true
 
@@ -143,12 +150,11 @@ jobs:
     - name: Verify imports
       run: |
         export PYTHONPATH="${PYTHONPATH}:${PWD}/backend"
-        cd backend
-        python -c "import app.main; print('Main app OK')"
-        python -c "import app.core.database; print('Database module OK')"
-        python -c "import app.api.v1.backtesting; print('Backtesting API OK')"
-        python -c "import app.api.v1.paper_trading; print('Paper trading API OK')"
-        python -c "import app.services.backtest_service; print('Backtest service OK')"
+        python -c "import sys; sys.path.insert(0, 'backend'); import app.main; print('Main app OK')"
+        python -c "import sys; sys.path.insert(0, 'backend'); import app.core.database; print('Database module OK')"
+        python -c "import sys; sys.path.insert(0, 'backend'); import app.api.v1.backtesting; print('Backtesting API OK')"
+        python -c "import sys; sys.path.insert(0, 'backend'); import app.api.v1.paper_trading; print('Paper trading API OK')"
+        python -c "import sys; sys.path.insert(0, 'backend'); import app.services.backtest_service; print('Backtest service OK')"
     
     - name: Check for secrets in code
       run: |
