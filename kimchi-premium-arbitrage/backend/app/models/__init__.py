@@ -9,6 +9,7 @@ from app.models.trading import Position, Order, TradingSession, OrderStatus, Ord
 from app.models.strategy import Strategy
 from app.models.backtest import Backtest
 from app.models.alert import Alert, AlertType, AlertPriority
+from app.models.paper_trading import PaperTradingSession, PaperOrder, PaperPosition
 
 __all__ = [
     "Base",
@@ -29,4 +30,7 @@ __all__ = [
     "Alert",
     "AlertType",
     "AlertPriority",
+    "PaperTradingSession",
+    "PaperOrder",
+    "PaperPosition",
 ]
