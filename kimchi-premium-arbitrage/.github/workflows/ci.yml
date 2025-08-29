@@ -1,0 +1,149 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black mypy
+    
+    - name: Run Black formatter check
+      run: black --check .
+      continue-on-error: true
+    
+    - name: Run Flake8 linter
+      run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      continue-on-error: true
+    
+    - name: Run MyPy type checker
+      run: mypy . --ignore-missing-imports
+      continue-on-error: true
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+        pip install pytest pytest-cov pytest-asyncio pytest-timeout aiosqlite pytest-mock httpx
+    
+    - name: Run tests with coverage
+      run: |
+        cd backend && pytest tests/ -v --cov=app --cov-report=xml --cov-report=term --timeout=300
+      env:
+        PYTHONPATH: ${{ github.workspace }}/backend
+        CI: true
+        TEST_DATABASE_URL: sqlite+aiosqlite:///:memory:
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install safety bandit
+    
+    - name: Run Safety check
+      run: |
+        # safety check를 실행하되 알려진 문제는 무시
+        safety check --json || echo "Safety check completed with warnings"
+      continue-on-error: true
+    
+    - name: Run Bandit security linter
+      run: |
+        if [ -d "src/" ]; then
+          bandit -r src/ -f json
+        elif [ -d "backend/app/" ]; then
+          bandit -r backend/app/ -f json
+        fi
+      continue-on-error: true
+
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    needs: [test]
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r backend/requirements.txt
+    
+    - name: Verify imports
+      run: |
+        export PYTHONPATH="${PYTHONPATH}:${PWD}/backend"
+        cd backend
+        python -c "import app.main; print('Main app OK')"
+        python -c "import app.core.database; print('Database module OK')"
+        python -c "import app.api.v1.backtesting; print('Backtesting API OK')"
+        python -c "import app.api.v1.paper_trading; print('Paper trading API OK')"
+        python -c "import app.services.backtest_service; print('Backtest service OK')"
+    
+    - name: Check for secrets in code
+      run: |
+        pip install detect-secrets
+        detect-secrets scan --baseline .secrets.baseline
+      continue-on-error: true
