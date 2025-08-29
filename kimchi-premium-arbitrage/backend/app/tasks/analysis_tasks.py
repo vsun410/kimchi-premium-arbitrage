@@ -11,8 +11,8 @@ import numpy as np
 
 from app.core.celery_app import celery_app
 from app.core.database import AsyncSessionLocal
-from app.models.market_data import MarketData, KimchiPremium
-from app.models.trading import Trade, Position
+from app.models.market_data import PriceData as MarketData, PremiumData as KimchiPremium
+from app.models.trading import Order as Trade, Position
 from sqlalchemy import select, and_, func
 
 @celery_app.task(name='generate_daily_report')

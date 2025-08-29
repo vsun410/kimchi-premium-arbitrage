@@ -10,10 +10,14 @@ from sqlalchemy import select, and_, func
 from app.core.database import get_db
 from app.models.paper_trading import PaperTradingSession, PaperOrder, PaperPosition
 from app.schemas.paper_trading import (
-    PaperSessionCreate, PaperSessionResponse, PaperSessionUpdate,
-    PaperOrderCreate, PaperOrderResponse,
-    PaperPositionResponse, PaperBalanceResponse,
-    PaperPerformanceMetrics
+    PaperTradingSessionCreate as PaperSessionCreate,
+    PaperTradingSessionResponse as PaperSessionResponse,
+    PaperSessionUpdate,
+    PaperOrderCreate, 
+    PaperOrderResponse,
+    PaperPositionResponse, 
+    PaperBalanceResponse,
+    PaperSessionMetrics as PaperPerformanceMetrics
 )
 from app.services.paper_trading_service import PaperTradingService
 from app.core.websocket_manager import WebSocketManager

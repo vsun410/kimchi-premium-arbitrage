@@ -11,7 +11,7 @@ import aiohttp
 from app.core.celery_app import celery_app
 from app.core.database import AsyncSessionLocal
 from app.core.config import settings
-from app.models.market_data import MarketData, OrderBook, KimchiPremium
+from app.models.market_data import PriceData as MarketData, OrderBookSnapshot as OrderBook, PremiumData as KimchiPremium
 from sqlalchemy import select, and_, delete
 import ccxt.pro as ccxtpro
 
