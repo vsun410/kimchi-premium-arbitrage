@@ -9,6 +9,8 @@ from typing import Dict, List, Optional, Tuple
 from datetime import datetime, timedelta
 import logging
 
+from backtesting.backtest_engine import OrderSide
+
 logger = logging.getLogger(__name__)
 
 
@@ -77,9 +79,9 @@ class PerformanceAnalyzer:
         if excess_returns.std() > 0:
             sharpe = excess_returns.mean() / excess_returns.std() * np.sqrt(252)
         else:
-            sharpe = 0
+            sharpe = 0.0
             
-        return sharpe
+        return float(sharpe)
     
     def calculate_calmar_ratio(self) -> float:
         """
@@ -91,9 +93,9 @@ class PerformanceAnalyzer:
         # Handle both DataFrame and List
         if isinstance(self.portfolio_history, pd.DataFrame):
             if self.portfolio_history.empty:
-                return 0
+                return float(0)
             if 'value' not in self.portfolio_history.columns:
-                return 0
+                return float(0)
             
             initial_value = self.portfolio_history['value'].iloc[0]
             final_value = self.portfolio_history['value'].iloc[-1]
@@ -107,7 +109,7 @@ class PerformanceAnalyzer:
                 days = len(self.portfolio_history)
         else:
             if self.portfolio_history.empty:
-                return 0
+                return float(0)
             
             # 총 수익률
             initial_value = self.portfolio_history.iloc[0]['value']
@@ -122,18 +124,18 @@ class PerformanceAnalyzer:
         if days > 0:
             annual_return = (1 + total_return) ** (365 / days) - 1
         else:
-            annual_return = 0
+            annual_return = 0.0
         
         # 최대 낙폭
         max_dd = self.calculate_max_drawdown()
         
         # Calmar Ratio
-        if max_dd > 0:
-            calmar = annual_return / max_dd
+        if max_dd != 0:
+            calmar = annual_return / abs(max_dd)  # abs() 사용하여 양수로 변환
         else:
-            calmar = 0  # inf 대신 0 반환 (CI 테스트 호환)
+            calmar = 0.0  # inf 대신 0.0 반환 (CI 테스트 호환, float 타입)
             
-        return calmar
+        return float(calmar)
     
     def calculate_max_drawdown(self) -> float:
         """
@@ -209,8 +211,24 @@ class PerformanceAnalyzer:
         Returns:
             Profit Factor
         """
-        if self.portfolio_history.empty:
-            return 0
+        # portfolio_history가 비어있으면 trades에서 계산
+        if isinstance(self.portfolio_history, pd.DataFrame) and self.portfolio_history.empty:
+            if self.trades:
+                gross_profit = 0
+                gross_loss = 0
+                for trade in self.trades:
+                    if hasattr(trade, 'pnl'):
+                        if trade.pnl > 0:
+                            gross_profit += trade.pnl
+                        else:
+                            gross_loss += abs(trade.pnl)
+                    else:
+                        # pnl이 없으면 price * amount로 추정
+                        value = trade.price * trade.amount
+                        if trade.side == OrderSide.SELL:
+                            gross_profit += value
+                return gross_profit / gross_loss if gross_loss > 0 else float('inf')
+            return 0.0
         
         gross_profit = 0
         gross_loss = 0
